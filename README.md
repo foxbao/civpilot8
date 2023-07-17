@@ -1,14 +1,5 @@
 # Apollo(v8.0.0) CyberRT
 
-![CyberRT](./docs/CyberRT.gif)
-
-| Target        |  Status  |
-| ------------- | :-----:|
-| Ubuntu18.04   | [![build v8.0.0](https://github.com/minhanghuang/CyberRT/actions/workflows/ubuntu18-v8.0.0-build.yaml/badge.svg?branch=v8.0.0)](https://github.com/minhanghuang/CyberRT/actions/workflows/ubuntu18-v8.0.0-build.yaml) |
-| Ubuntu20.04   | [![build v8.0.0](https://github.com/minhanghuang/CyberRT/actions/workflows/ubuntu20-v8.0.0-build.yaml/badge.svg?branch=v8.0.0)](https://github.com/minhanghuang/CyberRT/actions/workflows/ubuntu20-v8.0.0-build.yaml) |
-| Ubuntu22.04   | [![build v8.0.0](https://github.com/minhanghuang/CyberRT/actions/workflows/ubuntu22-v8.0.0-build.yaml/badge.svg?branch=v8.0.0)](https://github.com/minhanghuang/CyberRT/actions/workflows/ubuntu22-v8.0.0-build.yaml) |
-| Ubuntu latest   | [![build v8.0.0](https://github.com/minhanghuang/CyberRT/actions/workflows/ubuntu-latest-v8.0.0-build.yaml/badge.svg?branch=v8.0.0)](https://github.com/minhanghuang/CyberRT/actions/workflows/ubuntu-latest-v8.0.0-build.yaml) |
-
 ## #1 Env
 
 > dependence
@@ -24,8 +15,9 @@ python3 -m pip install protobuf==3.14.0
 1. clone
 
 ```shell
-git clone --single-branch --branch v8.0.0 https://github.com/minhanghuang/CyberRT.git
-cd CyberRT
+git clone git@github.com:foxbao/civpilot8.git
+cd civpilot8
+git checkout -b dev origin/dev
 ```
 
 2. build third party
@@ -33,7 +25,7 @@ cd CyberRT
 > install
 
 ```shell
-sudo ./scripts/install.sh
+./scripts/install.sh
 ```
 
 > export path
