@@ -2,14 +2,91 @@
 
 ## #1 Env
 
-> dependence
+1. > dependence
 
 ```shell
 sudo apt update
-sudo apt install -y libpoco-dev uuid-dev libncurses5-dev python3-dev python3-pip
+sudo apt install -y libpoco-dev uuid-dev libncurses5-dev python3-dev python3-pip libeigen3-dev
 python3 -m pip install protobuf==3.14.0
 ```
 
+2. > absl
+```shell
+    wget https://apollo-system.cdn.bcebos.com/archive/6.0/20200225.2.tar.gz
+    tar -xzvf 20200225.2.tar.gz
+```
+
+add the following cmake command in CMakeLists.txt
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+```shell
+    cmake -DBUILD_SHARED_LIBS=ON -L CMakeLists.txt && make
+    sudo make install
+```
+
+3. > proj
+```shell
+    sudo apt-get install libproj-dev
+    sudo apt install sqlite3
+```
+Download projxxxx.tar.gz from from https://proj.org/download.html
+```shell
+    tar -xzvf projxxx.tar.gz
+    cd proj-9.0.1
+    mkdir build
+    cd build
+    cmake ..
+    cmake --build .
+	sudo make install
+```
+
+4. > OpenCV
+```shell
+    sudo apt-get install libpng-dev
+    sudo apt-get install libjpeg-dev
+    sudo apt-get install libopenexr-dev
+    sudo apt-get install libtiff-dev
+    sudo apt-get install libwebp-dev    
+
+    https://docs.opencv.org/4.x/d2/de6/tutorial_py_setup_in_ubuntu.html
+    git clone https://github.com/opencv/opencv.git
+
+    mkdir build
+    cd build
+    cmake ../
+    make -j16
+    sudo make install
+```
+5. > VTK VTK 8.2.0
+```shell
+    https://vtk.org/download/
+    cmake-gui (select qt related, then press "configure","generate")
+    cd build
+    make
+    sudo make install 
+    dependencies
+    sudo apt-get install qttools5-dev
+    sudo apt install libxt-dev
+```
+6. > QT 5.12
+```shell
+    refer to https://doc.qt.io/archives/qt-5.12/linux-building.html
+    https://download.qt.io/archive/qt/5.12/5.12.12/
+    download qt-everywhere-src-5.12.12.tar.xz 
+    xz -d qt-everywhere-src-5.12.12.tar.xz
+    tar -xvf qt-everywhere-src-5.12.12.tar
+    cd qt-everywhere-src-5.12.12
+    ./configure
+    make
+    make install
+    sudo apt install libqt5x11extras5-dev
+    sudo apt install libqt5serialport5
+    sudo apt install libqt5serialport5-dev
+
+    Download qt-opensource-linux-x64-5.12.12.run
+    Run it and install only Qt-Creator
+
+    sudo apt-get install xserver-xorg
+```
 ## #2 Build
 
 1. clone
