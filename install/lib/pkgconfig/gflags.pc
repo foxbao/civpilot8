@@ -1,4 +1,4 @@
-prefix=/home/baojiali/Downloads/CyberRT/install
+prefix=/home/baojiali/Downloads/civpilot8/install
 exec_prefix=${prefix}
 bindir=${prefix}/bin
 libdir=${prefix}/lib

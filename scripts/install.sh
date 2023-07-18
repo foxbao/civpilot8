@@ -49,6 +49,8 @@ function build_nlohmann_json() {
   mkdir -p build && cd build
   cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DBUILD_SHARED_LIBS=ON ..
   make install -j$(nproc)
+  cd ..
+  rm -rf build
   popd
 }
 
@@ -101,6 +103,8 @@ function build_gfamily() {
   mkdir -p build && cd build
   CXXFLAGS="-fPIC" cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DBUILD_SHARED_LIBS=ON ..
   make install -j$(nproc)
+  cd ..
+  rm -rf build
   popd
 
   # glog
@@ -115,6 +119,8 @@ function build_gfamily() {
       echo "not support $ARCH"
   fi
   make install -j$(nproc)
+  cd ..
+  rm -rf build
   popd
  
   # googletest
@@ -123,6 +129,8 @@ function build_gfamily() {
   mkdir -p build && cd build
   CXXFLAGS="-fPIC" cmake -DCMAKE_CXX_FLAGS="-w" -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DBUILD_SHARED_LIBS=ON ..
   make install -j$(nproc)
+  cd ..
+  rm -rf build
   popd
 
   # protobuf
@@ -131,6 +139,8 @@ function build_gfamily() {
   cd cmake && mkdir -p build && cd build
   cmake -Dprotobuf_BUILD_SHARED_LIBS=ON -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX ..
   make install -j$(nproc)
+  cd ..
+  rm -rf build
   popd
 }
 

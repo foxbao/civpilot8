@@ -1,0 +1,78 @@
+syntax = "proto2";
+
+package civ.localization;
+
+import "message/common/proto/header.proto";
+import "message/localization/proto/pose.proto";
+import "message/common/proto/geometry.proto";
+import "message/common/proto/pnc_point.proto";
+import "message/localization/proto/localization_status.proto";
+
+message Uncertainty {
+    // Standard deviation of position, east/north/up in meters.
+    optional civ.common.Point3D position_std_dev = 1;
+  
+    // Standard deviation of quaternion qx/qy/qz, unitless.
+    optional civ.common.Point3D orientation_std_dev = 2;
+  
+    // Standard deviation of linear velocity, east/north/up in meters per second.
+    optional civ.common.Point3D linear_velocity_std_dev = 3;
+  
+    // Standard deviation of linear acceleration, right/forward/up in meters per
+    // square second.
+    optional civ.common.Point3D linear_acceleration_std_dev = 4;
+  
+    // Standard deviation of angular velocity, right/forward/up in radians per
+    // second.
+    optional civ.common.Point3D angular_velocity_std_dev = 5;
+  
+    // TODO: Define covariance items when needed.
+  }
+  
+  message LocalizationEstimate {
+    optional civ.common.Header header = 1;
+    optional civ.localization.Pose pose = 2;
+    optional Uncertainty uncertainty = 3;
+  
+    // The time of pose measurement, seconds since 1970-1-1 (UNIX time).
+    optional double measurement_time = 4;  // In seconds.
+  
+    // Future trajectory actually driven by the drivers
+    repeated civ.common.TrajectoryPoint trajectory_point = 5;
+  
+    // msf status
+    optional MsfStatus msf_status = 6;
+    // msf quality
+    optional MsfSensorMsgStatus sensor_status = 7;
+    // resolved status of rtk
+    optional int32 status = 8;
+    // add mileage
+    optional double mileage = 10;
+  
+    // trailer heading in vehicle coordinate system
+    optional float trailer_theta = 11;
+    optional float vehicle_to_curb_dist = 12;
+  }
+  
+  message LocalizationEstimateVec {
+    repeated LocalizationEstimate loc_vec = 1;
+  }
+  
+  enum MeasureState {
+    OK = 0;
+    WARNNING = 1;
+    ERROR = 2;
+    CRITICAL_ERROR = 3;
+    FATAL_ERROR = 4;
+  }
+  
+  message LocalizationStatus {
+    optional civ.common.Header header = 1;
+    optional MeasureState fusion_status = 2;
+    optional MeasureState gnss_status = 3 [deprecated = true];
+    optional MeasureState lidar_status = 4 [deprecated = true];
+    // The time of pose measurement, seconds since 1970-1-1 (UNIX time).
+    optional double measurement_time = 5;  // In seconds.
+    optional string state_message = 6;
+  }
+  

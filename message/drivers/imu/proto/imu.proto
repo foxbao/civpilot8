@@ -1,0 +1,35 @@
+syntax = "proto2";
+
+package civ.drivers.imu;
+import "message/common/proto/geometry.proto";
+import "message/common/proto/header.proto";
+
+message CorrectedImu {
+  optional civ.common.Header header = 1;
+
+  // The time of IMU measurement, seconds since the GPS epoch (Jan 6, 1980).
+
+  optional double measurement_time = 2;
+
+  // When measurement_span is non-zero, the gyroscope and accelerometer
+  // measurements are averaged for the period from
+  // (measurement_time - measurement_span) to measurement_time. Usually,
+  //      measurement_span = 1 / sampling_frequency.
+  //
+  // When measurement_span is 0, angular_velocity and linear_acceleration are
+  // instantaneous at measurement_time.
+  optional float measurement_span = 3 [default = 0.0];  // In seconds.
+
+  // Forward/left/up in meters per square second.
+  optional civ.common.Point3D linear_acceleration = 4;
+
+  // Around forward/left/up axes in radians per second.
+  optional civ.common.Point3D angular_velocity = 5;
+  // asdf
+  // optional zhito.localization.Pose imu = 3;
+
+  // optional uint64 timestamp = 1;
+  // optional uint64 acceleration = 2;
+  // optional uint64 seq = 3;
+  // optional bytes content = 4;
+};

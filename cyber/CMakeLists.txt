@@ -86,8 +86,8 @@ link_directories(${DEPENCENCY_LIB_DIRS})
 
 file(GLOB CYBER_PROTO_FILES
   "${CMAKE_CURRENT_SOURCE_DIR}/../modules/common_msgs/**/*.proto"
-  "${CMAKE_CURRENT_SOURCE_DIR}/../cyber/proto/*.proto"
-  "${CMAKE_CURRENT_SOURCE_DIR}/../cyber/examples/proto/*.proto"
+  "proto/*.proto"
+  "examples/proto/*.proto"
 )
 
 if(${CYBER_MSGS_CACHE})

@@ -1,0 +1,327 @@
+syntax = "proto2";
+package civ.drivers.rawgnss;
+
+// reference OEM7_Commands_Logs_Manualv11.pdf
+
+enum TimeStatus {
+  UNKNOWN = 20;
+  APPROXIMATE = 60;
+  COARSEADJUSTING = 80;
+  COARSE = 100;
+  COARSESTEERING = 120;
+  FREEWHEELING = 130;
+  FINEADJUSTING = 140;
+  FINE = 160;
+  FINEBACKUPSTEERING = 170;
+  FINESTEERING = 180;
+  SATTIME = 200;
+}
+
+enum SolutionStatus {
+  SOL_COMPUTED = 0;      // Solution computed
+  INSUFFICIENT_OBS = 1;  // Insufficient observations
+  NO_CONVERGENCE = 2;    // No convergence
+  SINGULARITY = 3;       // Singularity at parameters matrix
+  COV_TRACE = 4;         // Covariance trace exceeds maximum (trace > 1000 m)
+  TEST_DIST =
+      5;  // Test distance exceeded (maximum of 3 rejections if distance >10 km)
+  COLD_START = 6;  // Not yet converged from cold start
+  V_H_LIMIT = 7;   // Height or velocity limits exceeded (in accordance with
+                   // export licensing restrictions)
+  VARIANCE = 8;    // Variance exceeds limits
+  RESIDUALS = 9;   // Residuals are too large
+  // 10 - 12 reserved
+  INTEGRITY_WARNING = 13;  // Large residuals make position unreliable
+  // 14 - 17 reserved
+  PENDING = 18;
+  INVALID_FIX = 19;
+  UNAUTHORIZED = 20;
+  // 21 reserved
+  INVALID_RATE =
+      22;  // The selected logging rate is not supported for this solution type.
+}
+
+enum PositonVelocityType {
+  NONE = 0;         // No solution
+  FIXEDPOS = 1;     // Position has been fixed by the FIX position command or by
+                    // position averaging.
+  FIXEDHEIGHT = 2;  // Position has been fixed by the FIX height or FIX auto
+                    // command or by position averaging
+  // 3 reserved
+  FLOATCONV = 4;   // Solution from floating point carrier phase ambiguities
+  WIDELANE = 5;    // Solution from wide-lane ambiguities
+  NARROWLANE = 6;  // Solution from narrow-lane ambiguities
+  // 7 reserved
+  DOPPLER_VELOCITY = 8;  // Velocity computed using instantaneous Doppler
+  // 9 - 15 reserved
+  SINGLE = 16;      // Single point position
+  PSRDIFF = 17;     // Pseudorange differential solution
+  WAAS = 18;        // Solution calculated using corrections from an SBAS
+  PROPAGATED = 19;  // Propagated by a Kalman filter without new observations
+  // 20 -31
+  L1_FLOAT = 32;  // Floating L1 ambiguity solution
+  // 33 reserved
+  NARROW_FLOAT = 34;  // Floating narrow-lane ambiguity solution
+  // 35 - 47 reserved
+  L1_INT = 48;          // Integer L1 ambiguity solution
+  WIDE_INT = 49;        // Integer wide-lane ambiguity solution
+  NARROW_INT = 50;      // Integer narrow-lane ambiguity solution
+  RTK_DIRECT_INS = 51;  // RTK status where the RTK filter is directly
+                        // initialized from the INS filter
+  INS_SBAS = 52;        // INS calculated position corrected for the antenna
+  INS_PSRSP =
+      53;  // INS pseudorange single point solution – no DGPS corrections
+  INS_PSRDIFF = 54;   // INS pseudorange differential solution
+  INS_RTKFLOAT = 55;  // INS RTK floating point ambiguities solution
+  INS_RTKFIXED = 56;  // INS RTK fixed ambiguities solution
+  // 57 - 67 reserved
+  PPP_CONVERGING =
+      68;    // Converging TerraStar-C, TerraStar-C PRO or TerraStar-X solution
+  PPP = 69;  // Converged TerraStar-C, TerraStar-C PRO or TerraStar-X solution
+  OPERATIONAL = 70;    // Solution accuracy is within UAL operational limit
+  WARNING = 71;        // Solution accuracy is outside UAL operational limit but
+                       // within warning limit
+  OUT_OF_BOUNDS = 72;  // Solution accuracy is outside UAL limits
+  INS_PPP_CONVERGING =
+      73;  // INS with TerraStar-C , TerraStar-C PRO or TerraStar-X Precise
+           // Point Positioning (PPP) solution converging
+  INS_PPP =
+      74;  // INS with TerraStar-C , TerraStar-C PRO or TerraStar-X PPP solution
+  PPP_BASIC_CONVERGING = 77;  // Converging TerraStar-L solution
+  PPP_BASIC = 78;             // Converged TerraStar-L solution
+  INS_PPP_BASIC_CONVERGING =
+      79;              // INS with TerraStar-L PPP basic solution converging
+  INS_PPP_BASIC = 80;  // INS with TerraStar-L PPP basic solution
+}
+
+message LogHeader {
+  optional int32 sync = 1 [default = 35];  // char: '#'
+  required string name = 2;
+}
+
+message GnssHeader {
+  required LogHeader log_header = 1;
+  required string port = 2;  // port name
+  required uint32 sequence = 3;
+  required float idle_time = 4;
+  required TimeStatus time_status = 5;
+  required uint32 week_num = 6;
+  required double gps_seconds = 7;
+  required uint32 receiver_status = 8;
+  required uint32 reserved = 9 [default = 0];
+  required uint32 receiver_sw_version = 10;  // receiver software build number
+  optional double received_timestamp = 11;
+}
+
+enum DatumID {
+  WGS84 = 61;
+  USER = 63;
+}
+
+message Bestpos {
+  // section 3.14
+  // #BESTPOSA
+  required GnssHeader gnss_header = 1;
+  optional SolutionStatus solution_status = 2;
+  optional PositonVelocityType pos_type = 3;
+  required double latitude_in_degree = 4;
+  required double longitude_in_degree = 5;
+  required double height_in_metres = 6;  // height above mean sea level
+  required float undulation = 7;  // the relationship between the geoid and the
+                                  // ellipsoid (m) of the chosen datum
+  required DatumID datum_id = 8;
+  required float latitude_std_dev = 9;          // in meter
+  required float longitude_std_dev = 10;        // in meter
+  required float height_std_dev = 11;           // in meter
+  required string base_station_id = 12;         // char[4]
+  required float diff_age_in_seconds = 13;      // differential age in seconds
+  required float solution_age_in_seconds = 14;  // soluation age in seconds
+  required int32 num_of_satellites_tracked =
+      15;  // number of satellites tracked, uchar
+  required int32 num_of_satellites_used =
+      16;  // number of satellites used in solution, uchar
+  required int32 num_of_satellites_with_l1_e1_b1 =
+      17;  // Number of satellites with L1/E1/B1 signals used in solution, uchar
+  required int32 num_of_satellites_with_multi_freq =
+      18;  // Number of satellites with multi-frequency signals used in solution
+  required int32 reserved = 19 [default = 0];  // reserved, hex
+  required int32 extended_solution_status =
+      20;  // Extended solution status, hex
+  required int32 galileo_beidou_sig_mask =
+      21;  // Galileo and BeiDou signals used mask, hex
+  required int32 gps_glonass_sig_mask =
+      22;  // GPS and GLONASS signals used mask, hex
+}
+
+message GNGGA {
+  // section 3.47
+  // $GPGGA
+  optional LogHeader log_header = 1;
+  optional double utc_in_seconds =
+      2;  // in seconds, raw string: UTC time status of position
+          // (hours/minutes/seconds/ decimal seconds)
+  optional float latitude = 3;  // Latitude (DDmm.mm)
+  enum LatitudeDirection {
+    North = 0;
+    South = 1;
+  }
+  optional LatitudeDirection latitude_dir = 4;
+  optional float longitude = 5;  // Longitude (DDDmm.mm)
+  enum LongitudeDirection {
+    East = 0;
+    West = 1;
+  }
+  optional LongitudeDirection longitude_dir = 6;
+  optional int32 quality = 7;  // GPS Quality Indicators
+  optional int32 num_of_satellites_used = 8;
+  optional float hdop = 9;  // Horizontal dilution of precision
+  optional float alt = 10;  // Antenna altitude above/below mean sea level
+  enum UnitTypes { METRES = 0; }
+  optional string utc_hhmmss = 11;
+  optional float latitude_deg = 12;
+  optional float longitude_deg = 13;
+
+  // required UnitTypes a_units = 11 [ default = METRES ]; // Units of antenna
+  // altitude (M = metres), 'M' required double undulation = 12; // Undulation -
+  // the relationship between the geoid and the WGS84 ellipsoid required
+  // UnitTypes u_units = 13; // Units of undulation (M = metres), 'M' required
+  // int32 age_in_seconds = 14; // Age of correction data (in seconds) The
+  // maximum age reported here is limited to 99 seconds. required string
+  // diff_base_stn_id = 15; // Differential base station ID
+}
+
+message GNVTG {
+  // section 3.60
+  // $GPVTG
+  required LogHeader log_header = 1;
+  required float track_true = 2;           // Track made good, degrees True
+  required bool true_track_indicator = 3;  // True track indicator
+  required float track_mag = 4;  // Track made good, degrees Magnetic; Track mag
+                                 // = Track true + (MAGVAR correction)
+  required bool magnetic_track_indicator =
+      5;                        // Magnetic track indicator, True: 'M'
+  required float speed_kn = 6;  // Speed over ground, knots
+  required bool nautical_speed_indicator =
+      7;                              // Nautical speed indicator, True: 'N'
+  required float speed_km = 8;        // speed, kilometres/hour
+  required bool speed_indicator = 9;  // Speed indicatior (K=km/hr), True: 'K'
+  enum PositionSystemModeIndicator {
+    Autonomous = 1;     // A: Autonomous
+    Differential = 2;   // D: Differential
+    EstimatedMode = 3;  // E: Estimated (dead reckoning) mode
+    ManualInput = 4;    // M: Manual Input
+    DataNotValid = 5;   // N: Data not valid
+  }
+  required PositionSystemModeIndicator mode_indicator = 10;
+}
+
+message Heading2 {
+  // section 3.62
+  // #HEADING2A
+  required GnssHeader gnss_header = 1;
+  optional SolutionStatus solution_status = 2;
+  optional PositonVelocityType pos_type = 3;
+  required float baseline_length_in_metres = 4;  // Baseline length in metres
+  required float heading_in_degrees = 5;  // Heading in degrees (0 to 359.999)
+  required float pitch_in_degrees = 6;    // Pitch (-90 to 90)
+  required float reserved = 7 [default = 0];  // reserved
+  required float heading_std_dev = 8;  // heading standard deviation in degrees
+  required float pitch_std_dev = 9;    // Pitch standard deviation int degrees
+  required string rover_receiver_id = 10;   // Rover Receiver ID, char[4]
+  required string master_receiver_id = 11;  // master receiver id, char[4]
+  required uint32 num_of_satellites_tracked = 12;
+  // number of satellites tracked, uchar
+  required uint32 num_of_satellites_in_solution =
+      13;  // number of satellites in solution, uchar
+  required uint32 num_of_satellites_above_mask_angle =
+      14;  // Number of satellites above the elevation mask angle, uchar
+  required uint32 num_of_satellites_above_mask_angle_l2 =
+      15;  // Number of satellites above the mask angle with L2, uchar
+  required uint32 solution_source = 16;  // solution source, hex
+  required uint32 extended_solution_status =
+      17;  // extended solution status, uchar
+  required uint32 galileo_beidou_sig_mask =
+      18;  // Galileo and BeiDou signals used mask
+  required uint32 gps_glonass_sig_mask =
+      19;  // GPS and GLONASS signals used mask
+}
+
+message RawImu {
+  // section 5.35
+  // #RAWIMUA
+  required GnssHeader gnss_header = 1;
+  required uint32 gnss_week = 2;
+  required double seconds_into_week = 3;
+  required uint32 imu_status = 4;
+  required double z_accel_output = 5;
+  required double y_accel_output = 6;
+  // A negative value implies the output is along the positive y-axis
+  // marked on the IMU. A positive value implies the change is
+  // in the direction opposite to that of the y-axis marked on the IMU
+  required double x_accel_output = 7;
+  required double z_gyro_output = 8;
+  required double y_gyro_output = 9;  // like y_accel_output
+  required double x_gyro_output = 10;
+}
+
+message BestVel {
+  // section 3.17
+  // #BESTVELA
+  required GnssHeader gnss_header = 1;
+  optional SolutionStatus solution_status = 2;
+  optional PositonVelocityType vel_type = 3;
+
+  required float latency = 4;
+  required float diff_age_in_seconds = 5;
+  required double horizontal_speed_over_ground = 6;  // m/s
+  required double track_over_ground = 7;
+  required double vertical_speed = 8;
+  required float reserved = 9;
+}
+
+enum InsStatus {
+  // InertialSolutionStatus
+  INS_INACTIVE = 0;
+  INS_ALIGNING = 1;
+  INS_HIGH_VARIANCE = 2;
+  INS_SOLUTION_GOOD = 3;
+  INS_SOLUTION_FREE = 6;
+  INS_ALIGNMENT_COMPLETE = 7;
+  DETERMINING_ORIENTATION = 8;
+  WAITING_INITIALPOS = 9;
+  WAITING_AZIMUTH = 10;
+  INITIALIZING_BIASES = 11;
+  MOTION_DETECT = 12;
+  WAITING_ALIGNMENTORIENTATION = 14;
+};
+
+message InspVax {
+  // section 5.23
+  // #INSVAX
+  required GnssHeader gnss_header = 1;
+  required InsStatus ins_status = 2;
+  optional PositonVelocityType pos_type = 3;
+  required double latitude = 4;                      // in degree
+  required double longitude = 5;                     // in degree
+  required double height = 6;                        // in meter
+  required float undulation = 7;                     // in meter
+  required double north_velocity = 8;                // in m/s
+  required double east_velocity = 9;                 // in m/s
+  required double up_velocity = 10;                  // in m/s
+  required double roll_in_local = 11;                // in degree
+  required double pitch_in_local = 12;               // in degree
+  required double azimuth_in_local = 13;             // in degree
+  required float latitude_std_deviation = 14;        // in meter
+  required float longitude_std_deviation = 15;       // in meter
+  required float height_std_deviation = 16;          // in meter
+  required float north_velocity_std_deviation = 17;  // in m/s
+  required float east_velocity_std_deviation = 18;   // in m/s
+  required float up_velocity_std_deviation = 19;     // in m/s
+  required float roll_std_deviation = 20;            // in degree
+  required float pitch_std_deviation = 21;           // in degree
+  required float azimuth_std_deviation = 22;         // in degree
+  required uint32 ext_sol_status = 23;               // extended solution status
+  required uint32 time_since_update =
+      24;  // Elapsed time since the last ZUPT or position update (seconds),
+           // ushort
+}

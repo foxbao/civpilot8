@@ -10,9 +10,15 @@ find_package(PkgConfig REQUIRED)
 find_package(fastrtps REQUIRED)
 find_package(fastcdr REQUIRED)
 find_package(Poco REQUIRED COMPONENTS Foundation)
-pkg_check_modules(Protobuf REQUIRED protobuf)
-pkg_check_modules(Glog REQUIRED libglog)
+
+find_package(glog REQUIRED)
+find_package(Protobuf REQUIRED)
+# pkg_check_modules(Protobuf REQUIRED protobuf)
+# pkg_check_modules(Glog REQUIRED libglog)
 pkg_check_modules(Gflags REQUIRED gflags)
+
+find_package(absl REQUIRED)
+find_package(PROJ4 REQUIRED)
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -31,13 +37,21 @@ link_directories(
     ${Gflags_LIBRARY_DIRS}
 )
 
+include(cmake/macros.cmake)
+#---- 导入选项参数 ----
+include(cmake/options.cmake)
+#---- 导入函数 ----
+include(cmake/functions.cmake)
+
+include(cmake/process_all_proto.cmake)  #生成项目依赖的proto
+
 
 # set the default modules to be compiled
 set(compile_dirs
     # message
-    #common
+    common
     cyber
-    #cyber_tool
+    cyber_tool
     #driver
     # map
     #thirdparty

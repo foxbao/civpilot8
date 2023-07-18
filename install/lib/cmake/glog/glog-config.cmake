@@ -20,6 +20,6 @@ endmacro()
 
 include (CMakeFindDependencyMacro)
 
-find_dependency (gflags 2.2.2 NO_MODULE)
+find_dependency (gflags 2.2.0 NO_MODULE)
 
 include ("${CMAKE_CURRENT_LIST_DIR}/glog-targets.cmake")

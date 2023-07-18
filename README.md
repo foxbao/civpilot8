@@ -10,7 +10,7 @@ sudo apt install -y libpoco-dev uuid-dev libncurses5-dev python3-dev python3-pip
 python3 -m pip install protobuf==3.14.0
 ```
 
-2. > absl
+2. > absl \
 ```shell
     wget https://apollo-system.cdn.bcebos.com/archive/6.0/20200225.2.tar.gz
     tar -xzvf 20200225.2.tar.gz
@@ -30,6 +30,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 ```
 Download projxxxx.tar.gz from from https://proj.org/download.html
 ```shell
+	wget https://download.osgeo.org/proj/proj-9.0.1.tar.gz
     tar -xzvf projxxx.tar.gz
     cd proj-9.0.1
     mkdir build
@@ -40,6 +41,7 @@ Download projxxxx.tar.gz from from https://proj.org/download.html
 ```
 
 4. > OpenCV
+If we want to visualize something, we need to install OpenCV
 ```shell
     sudo apt-get install libpng-dev
     sudo apt-get install libjpeg-dev
@@ -56,7 +58,8 @@ Download projxxxx.tar.gz from from https://proj.org/download.html
     make -j16
     sudo make install
 ```
-5. > VTK VTK 8.2.0
+5. > VTK 8.2.0 \
+If we want to use Viewer, we need to install VTK
 ```shell
     https://vtk.org/download/
     cmake-gui (select qt related, then press "configure","generate")
@@ -67,7 +70,8 @@ Download projxxxx.tar.gz from from https://proj.org/download.html
     sudo apt-get install qttools5-dev
     sudo apt install libxt-dev
 ```
-6. > QT 5.12
+6. > QT 5.12 \
+If we want to use UI, we need to install QT
 ```shell
     refer to https://doc.qt.io/archives/qt-5.12/linux-building.html
     https://download.qt.io/archive/qt/5.12/5.12.12/

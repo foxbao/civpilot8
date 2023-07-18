@@ -1,7 +1,7 @@
-prefix=/home/baojiali/Downloads/CyberRT/install
-exec_prefix=/home/baojiali/Downloads/CyberRT/install
-libdir=/home/baojiali/Downloads/CyberRT/install/lib
-includedir=/home/baojiali/Downloads/CyberRT/install/include
+prefix=/home/baojiali/Downloads/civpilot8/install
+exec_prefix=/home/baojiali/Downloads/civpilot8/install
+libdir=/home/baojiali/Downloads/civpilot8/install/lib
+includedir=/home/baojiali/Downloads/civpilot8/install/include
 
 Name: Protocol Buffers
 Description: Google's Data Interchange Format

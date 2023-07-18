@@ -1,0 +1,13 @@
+syntax = "proto2";
+
+package civ.civmap;
+import "message/common/proto/header.proto";
+import "message/map/proto/map.proto";
+
+message ZmapMessage {
+    optional civ.common.Header header = 1;
+    optional civ.hdmap.Map map = 2;
+    // optional zhito.localization.LocalizationEstimate localization = 2;
+    // optional zhito.hdmap.Map map = 3;
+    // optional RoutingMessage routing = 4;
+}
