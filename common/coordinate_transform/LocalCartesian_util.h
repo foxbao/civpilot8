@@ -2,7 +2,8 @@
 
 #include <Eigen/Core>
 // #include <LocalCartesian.hpp>
-#include "thirdparty/LINUX_X86_64/GeographicLib/include/LocalCartesian.hpp"
+// #include "thirdparty/LINUX_X86_64/GeographicLib/include/LocalCartesian.hpp"
+#include "common/GeographicLib/include/LocalCartesian.hpp"
 
 namespace civ {
 namespace common {

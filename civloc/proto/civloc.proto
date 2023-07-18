@@ -1,0 +1,54 @@
+syntax = "proto2";
+package civ.civloc;
+
+message PerceptionChanelConfig{
+  optional string name = 1;
+  enum Vendor{
+    OTHERS=0;
+    SIM = 1;              // perception from simulation
+    ZHITO=2;          // perception from zhito vision group
+    MOBILEYE=3;  // perception from mobileye,need conversion
+    MAXIEYE=4;     // perception from maxieye, place holder only, not really implemented
+    SMARTEREYE=5; // perception from smartereye, place holder only,not really implemented
+    HORIZON=6;    // perception from horizon, need conversion
+  }
+  optional Vendor vendor = 2 [default=SIM];
+  optional uint32 rate_hz = 3 [default = 10]; // perception frame per second, 
+}
+
+message TFConfig
+{
+  optional string broadcast_tf_frame_id = 9;
+  optional string broadcast_tf_child_frame_id = 10;
+}
+
+message ChanelConfig
+{
+  optional string name = 1;     // 通道名
+  optional uint32 rate_hz = 2;  // 帧率
+}
+
+message CivLocConfig {
+  required string version = 1 [default = "zloc_component config 1.0.0"];
+  enum WorkMode {
+    Forward = 0;  // 转发cgi610的结果
+    Fuse = 1;     // 多源融合模式
+  }
+  optional WorkMode mode = 2 [default = Forward];
+  // input
+  required ChanelConfig chassis = 8;
+  required ChanelConfig cgi610 = 12; // cgi610组合解通道
+  required ChanelConfig raw_cgi610_bestpos = 13; // 
+  required ChanelConfig raw_cgi610_bestvel = 14; // 
+  required ChanelConfig raw_cgi610_heading2 = 15; // 
+  required ChanelConfig raw_wheeltec_imu = 16; // 
+  repeated PerceptionChanelConfig perception = 17; // perception
+  required ChanelConfig pointcloud = 18; // perception
+  optional ChanelConfig pointcloud_map = 19; // pcd map
+  optional ChanelConfig zloc_map = 20;
+  optional ChanelConfig cpt7 = 21; //cpt7组合解决
+ 
+  // output
+  required ChanelConfig zloc_fuse = 22;  // GNSS + IMU + Vehicle_model
+  required ChanelConfig forward_cfg = 23;  // 转发通道名
+}

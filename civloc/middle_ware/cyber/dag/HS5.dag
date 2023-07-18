@@ -1,0 +1,13 @@
+# Define all coms in DAG streaming.
+module_config {
+    module_library : "/zhito/output/lib/libzloc_component.so"
+
+    components {
+      class_name : "CivLocComponent"
+      config {
+        name : "civlog"
+        config_file_path : "/home/baojiali/Downloads/civpilot/civloc/middle_ware/cyber/conf/input_output.pb.txt"
+        flag_file_path : "/home/baojiali/Downloads/civpilot/civloc/middle_ware/cyber/conf/vw.conf"
+      }
+    }
+}

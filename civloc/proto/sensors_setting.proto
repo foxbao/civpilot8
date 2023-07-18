@@ -1,0 +1,109 @@
+syntax = "proto2";
+package civ.civloc;
+import "message/common/proto/geometry.proto";
+
+
+message Extrinsic
+{
+  required civ.common.PointENU translation = 2;
+  required civ.common.Quaternion rotation = 3;
+}
+
+
+message AcceleratorPara
+{
+  repeated double skew = 1; // 3x3
+  repeated double velocity_random_walk = 2; // 速度随机游走  m/s/(h^0.5)
+  repeated double bias_stability = 3;       // 零偏稳定性 ug
+  required double related_time_s = 4;       // 相关时间 s
+  repeated double output_noise = 5;         // 零偏稳定性 ug
+}
+
+message GyroscopePara
+{
+  repeated double skew = 1; // 3x3
+  repeated double angle_random_walk = 2;  // 角度随机游走  °/(h^0.5)
+  repeated double bias_stability = 3;     // 零偏稳定性 °/h
+  required double related_time_s = 4;     // 相关时间 s
+  repeated double output_noise = 5;       // 零偏稳定性 °/s
+}
+
+message ImuPara
+{
+  required string name = 1;   // imu 名字
+  required int32 rate_hz = 2; // 帧率 
+  required AcceleratorPara acc = 3; // 
+  required GyroscopePara gyr = 4;
+  repeated double rot_gyr_acc = 5; // 3x3
+  required Extrinsic ex_para = 6;
+}
+
+message GnssPara
+{
+  required string name = 1;   // gnss 名字
+  required int32 rate_hz = 2; // 帧率 
+  required bool with_differential_information = 3; // 带差分
+  required Extrinsic ex_para = 4;
+}
+
+message CameraPara
+{
+  required string name = 1;       // 相机 名字
+  required int32 rate_hz = 2;     // 帧率 
+  repeated double resolution = 3; // 分辨率
+  repeated double K = 5; // 3x3
+  enum ProjectionModel
+  {
+    Pinhole = 0;
+  }
+  required ProjectionModel projection_model = 6 [default = Pinhole];
+  enum DistortionModel
+  {
+    Radtan = 0; // distortion_coff_ is k1 k2 p1 p1 k3
+  }
+  required DistortionModel distortion_model = 7 [default = Radtan];
+  repeated double distortion_coff_ = 8; // 3x3
+  required Extrinsic ex_para = 10;
+}
+
+//! 该配置由外部指定
+message PerceptionPara
+{
+  required string name = 1;   // Perception 名字
+  enum Type {
+    IMAGE_UV = 0;   // 像平面的uv坐标,单位像素
+    BEV_XY = 1;     // bird's-eye vision 鸟瞰图的xy坐标 [从后向前看, x:前 y:右]
+  }
+  required Type type = 2 [default = BEV_XY];
+  required CameraPara cam_para = 5; // 感知对应的相机参数
+}
+
+message WheelOdoPara
+{
+  required string name = 1;
+  required int32 rate_hz = 2;     // 帧率 
+  required double w = 3;
+  required double l1 = 4;
+  required double l2 = 5;
+  repeated double ko = 6;
+
+  //repeated zhito.common.Point3D lvo = 3;
+}
+
+message LidarPara
+{
+  required string name = 1;   // lidar 名字
+  required int32 rate_hz = 2; // 帧率 
+  required Extrinsic ex_para = 3;
+}
+
+message SensorsSetting
+{
+  required string version = 1 [default = "1.0.0"];
+  required string vehicle_name = 2; // 车牌号
+  repeated ImuPara imu = 3;
+  repeated GnssPara gnss = 4;
+  repeated PerceptionPara perc = 5;  // 感知参数
+  optional WheelOdoPara wheel = 6;
+  optional LidarPara lidar = 7;
+}

@@ -1,0 +1,70 @@
+version: "1.1.1"
+
+vehicle_name: "HS5"
+
+
+imu {
+  name: "cgi610 raw imu ADIS16505-2"
+  rate_hz: 100
+  acc {
+    # range +-8g
+    skew: [1, 0, 0, 0, 1, 0, 0, 0, 1]
+    # velocity_random_walk: [0.009, 0.009, 0.012] # 速度随机游走  m/s/(h^0.5)
+    velocity_random_walk: [0.27, 0.27, 0.36] # 速度随机游走  m/s/(h^0.5)
+    # bias_stability: [2.65, 2.65, 4.31] #零偏稳定性 ug
+    bias_stability: [100, 100, 200] #零偏稳定性 ug
+    related_time_s: 300
+    # output_noise: [480, 480, 607] # ug
+    output_noise: [4908, 4223, 5470] # ug
+  }
+  gyr {
+    # range +-500dps
+    skew: [1, 0, 0, 0, 1, 0, 0, 0, 0.998] # 刻度与交叉耦合需要详细标定
+    # angle_random_walk: [0.15, 0.15, 0.2]  #角度随机游走  °/(h^0.5)
+    angle_random_walk: [0.3, 0.3, 0.4]  #角度随机游走  °/(h^0.5)
+    # bias_stability: [2.2, 2.7, 1.6] # 零偏稳定性 °/h
+    bias_stability: [2.2, 2.7, 1.6] # 零偏稳定性 °/h
+    related_time_s: 300
+    # output_noise: [0.08, 0.08, 0.116]  # °/s
+    output_noise: [0.097, 0.073, 0.0297]  # °/s
+  }
+  rot_gyr_acc : [1, 0, 0,0, 1, 0,0, 0, 1]
+  ex_para {
+    #translation { x: -0.03 , y: -0.22, z: 0.64 }
+    translation { x: 0 , y: 0, z: 0 }
+    # rotation { qx:-0.0235597, qy: -0.0000514 , qz: -0.0021811, qw: 0.9997201}
+    rotation { qx: 0, qy: 0 , qz: 0, qw: 1}
+
+  }
+}
+
+gnss {
+  name: "cgi610 best pos"
+  rate_hz: 10
+  with_differential_information : true
+  ex_para {
+    #translation { x: 0.44 , y: 0, z: 1.36 }
+    translation { x: 0 , y: 0, z: 0 }
+    #rotation { qx:0, qy: 0 , qz: 0.708956, qw: 0.705253} # 双天线在车体坐标系下的姿态
+    rotation { qx:0, qy: 0 , qz: 0, qw: 1} # 双天线在车体坐标系下的姿态
+  }
+}
+
+wheel{
+  name : "J7 4 wheels"
+  rate_hz : 100
+  w : 2.55
+  l1 : 3.3
+  l2 : 4.65
+  #lvo : [{x: -1.275 ,y: 4.65, z: 0},{x: 1.275, y: 4.65, z: 0},{x: -1.275, y: 1.35, z: 0},{x: 1.275, y:1.35, z:0}] # fl,fr,rl,rr 
+  
+}
+
+lidar {
+  name : "top lidar"
+  rate_hz : 10
+  ex_para {
+    translation { x: 0.00 , y: 0.95, z: 1.74 }
+    rotation { qx: 0.0098441, qy: -0.0026009 , qz: 0.7015269, qw: 0.7125702}
+  }
+}

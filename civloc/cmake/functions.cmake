@@ -2,13 +2,8 @@
 set(THIRDPARTY_DIR_FOR_PROTOC "/project/thirdparty/X86_64" CACHE STRING "protoc and lib path")
 set(ENV{LD_LIBRARY_PATH} ${THIRDPARTY_DIR_FOR_PROTOC}_protoc/lib)
 # set(PROTOBUF_PROTOC_EXECUTABLE ${THIRDPARTY_DIR_FOR_PROTOC}_protoc/bin/protoc CACHE STRING "protoc cmd")
-# set(PROTOBUF_PROTOC_EXECUTABLE /usr/local/bin/protoc CACHE STRING "protoc cmd")
-# set(PROTOBUF_PROTOC_EXECUTABLE /opt/cyber/env/bin/protoc CACHE STRING "protoc cmd")
-if(PROTOBUF_PROTOC_EXECUTABLE)
-  message("Using protoc:${PROTOBUF_PROTOC_EXECUTABLE}")
-else()
-  message("Protoc not designated by system")
-endif()
+set(PROTOBUF_PROTOC_EXECUTABLE /usr/local/bin/protoc CACHE STRING "protoc cmd")
+
 #用于获取某个目录下的所有子目录
 macro(SUBDIRLIST result curdir)
   file(GLOB children RELATIVE ${curdir} ${curdir}/*)
@@ -82,9 +77,6 @@ function(generate_proto_files ret_proto_files)
   set(final_exec_cmd "${final_exec_cmd};--cpp_out=${proto_interface_PROTO_OUTPUT_DIR}")
   # set(final_python_exec_cmd "${final_python_exec_cmd};--python_out=${CMAKE_SOURCE_DIR}/output/python")
   set(final_python_exec_cmd "${final_python_exec_cmd};--python_out=${proto_interface_PROTO_OUTPUT_DIR}")
-  message(STATUS "???${proto_interface_PROTO_INPUT_DIR})")
-  message(STATUS "existing protos: ${proto_interface_PROTO_FILES})")
- 
   foreach(proto_file_item ${proto_interface_PROTO_FILES})
     #检查输入文件是否存在
     if(NOT EXISTS ${proto_interface_PROTO_INPUT_DIR}/${proto_file_item})

@@ -1,0 +1,164 @@
+syntax = "proto2";
+package civ.civloc;
+
+message CacherConfig {
+  required float max_delay_ms = 1;
+  required float duration_s = 2;
+  optional string main_channel_name = 3;
+}
+
+// fuse
+message FilterPara {
+  repeated double init_pos_error_m = 1;
+  repeated double init_vel_error_mps = 2;
+  repeated double init_att_error_deg = 3;
+  repeated double init_acc_bias_error_mg = 4;
+  repeated double init_gyr_bias_error_dps = 5;
+  repeated double init_qvi_error_deg = 6;
+  repeated double init_kod_error = 7;
+  // 过程噪声
+  repeated double position_random_walk_mpsh = 8;
+  repeated double odo_scale_random_walk_psh = 9;
+  repeated double qvv1_random_walk_dpsh = 10;
+}
+message GnssFilterConfig {
+  required bool enable_gnss_pos = 1;
+  required bool enable_gnss_vel = 2;
+  repeated double position_noise_m = 3;
+  repeated double velocity_noise_mps = 4;
+  required bool enable_gnss_dual = 5;
+  repeated double dual_angle_noise_deg = 6;
+  required float farme_judge_time_s = 7;
+  required float max_change_ratio = 8;
+  required float pos_std_m_upper_limit = 9;
+  required float residual_drift_m_upper_limit = 10;
+  required float heading_std_deg_upper_limit = 11;
+  required float heading_std_deg_lower_limit = 12;
+}
+message VehicleModelFilterConfig {
+  required bool enable_nhc = 1;
+  required bool enable_zupt = 2;
+  required bool enable_zgbc = 3;
+  required bool enable_zpc = 4;
+  required bool enable_zac = 5;
+  repeated double nhc_noise_mps = 10;
+  repeated double zupt_noise_mps = 11;
+  repeated double zgbc_noise_dps = 12;
+  repeated double zac_noise_deg = 13;
+  repeated double zpc_noise_m = 14;
+}
+message WheelOdoFilterConfig {
+  // required bool enable_wheel = 1;
+  required bool enable_rear_wheel = 1;
+  required bool enable_front_wheel = 2;
+  required bool enable_rear_diff = 3;
+  required bool enable_front_diff = 4;
+  repeated double rear_wheel_noise_mps = 5;
+  repeated double front_wheel_noise_mps = 6;
+  repeated double rear_diff_noise_mps = 7;
+  repeated double front_diff_noise_mps = 8;
+}
+
+message NDTConfig {
+  required double res_m = 1;
+  required double step_size_m = 2;
+  required double trans_eps_m = 3;
+  required double rot_eps_deg = 4;
+  required double max_iter = 5;
+  required double score_threshold = 6;
+  required double transfer_prob_threshold = 7;
+  repeated double online_scan_voxel_m = 8;
+  repeated double local_map_voxel_m = 9;
+}
+
+message LidarFilterConfig {
+  required bool enable_ndt_map_match = 1;
+  required bool enable_ndt_frame_match = 2;
+  repeated double ndt_map_match_transfer_prob_threshold = 3;
+  repeated double ndt_map_match_score_threshold = 4;
+  repeated double ndt_map_match_nice_noise_mps =
+      5;  // ndt 匹配的噪声 [m m m , deg deg deg]
+  repeated double ndt_map_match_bad_noise_mps =
+      6;  // ndt 匹配的噪声 [m m m , deg deg deg]
+  repeated double ndt_frame_match_noise_mps =
+      7;  // ndt 匹配的噪声 [m m m , deg deg deg]
+}
+
+message VisionFilterConfig {
+  required bool enable_bev_line = 1;
+  required bool enable_bev_cubic_curv = 2;
+  required bool enable_pixel_line = 3;
+  required bool enable_pixel_cubic_curv = 4;
+  repeated double vision_noise_mps = 5;
+  repeated double perc_range_m = 6;
+  required double valid_mean_match_dist_m = 7;
+  required double valid_match_point_dist_m = 8;
+}
+
+message FuseConfig {
+  enum FuseMode {
+    ESKF = 0;  // error state ekf
+  }
+  required FuseMode mode = 1;
+  required FilterPara filter_para = 2;
+  required GnssFilterConfig gnss_filter = 3;
+  required VehicleModelFilterConfig vm_filter = 4;
+  required WheelOdoFilterConfig wheel_filter = 5;
+  optional LidarFilterConfig lidar_filter = 6;
+  required VisionFilterConfig vision_filter = 7;
+  required bool online_estimation_qvv1 = 10;  // [qvi ...]
+  required bool online_estimation_ko = 20;
+}
+
+message VisionMapConfig {
+  required string channel_name = 1;
+  required double max_leaf_dimension = 2;
+  required int32 max_leaf_size = 3;
+  required double box_half_width_m = 4;
+  required double search_distance_m = 5;
+  required double sample_interval_m = 6;
+}
+
+message PointCloudMapConfig {
+  required string map_path =
+      1;  // directory which contains pcd map and map config file
+  optional float search_radius_m = 2 [
+    default = 300
+  ];  // global map is splitted into uniform cells,not used any longer
+  required string map_cfg_file =
+      3;  // config proto file which contains pointcloud map as grid information
+}
+
+message IOConfig {
+  optional string data_dir = 1;  // 数据所在目录
+}
+
+message DetectConfig {
+  required double sample_range_time = 1;
+  required int32 static_continuous_number = 2;
+  repeated double zero_velocity_detector_threshold = 3;
+}
+
+message LidarMatchConfig {
+  required bool enable_lidar = 1 [default = false];
+  repeated double online_scan_range_m = 2;
+  optional NDTConfig ndt_config = 20;
+}
+
+message VisionMatchConfig {
+  required bool enable_vision = 1;
+  required double match_threshold_m = 2;
+}
+
+message LocatorConfig {
+  required string version = 1 [default = "1.0.0"];
+  required CacherConfig cacher_cfg = 2;
+  required VisionMapConfig visionmap_cfg = 4;
+  optional IOConfig io_cfg = 5;
+  optional PointCloudMapConfig pointcloud_map_cfg = 6;
+
+  optional FuseConfig fuse_cfg = 11;
+  optional DetectConfig detect_cfg = 12;
+  optional LidarMatchConfig lidar_match_cfg = 13;
+  optional VisionMatchConfig vision_match_cfg = 14;
+}

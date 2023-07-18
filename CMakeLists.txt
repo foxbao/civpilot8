@@ -56,6 +56,16 @@ set(compile_dirs
     # map
     #thirdparty
 )
+# compile only the necessary modules
+list(APPEND compile_dirs
+  # civmap
+  # civview
+  civloc
+  # planning
+  # routing
+  # 
+  # test
+)
 
 foreach(subdir ${compile_dirs})
     if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${subdir}")

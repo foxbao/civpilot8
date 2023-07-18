@@ -13,7 +13,7 @@ GnssComponent::~GnssComponent() {
     delete serial_;
   }
 }
-bool GnssComponent::Init() {}
+bool GnssComponent::Init() {return true;}
 int GnssComponent::Read(const char *device_name, uint32_t baud_rate) {
   std::cout << "connecting to " << device_name << ":" << baud_rate << std::endl;
   int remainSize = 0;
