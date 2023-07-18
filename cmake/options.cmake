@@ -11,4 +11,6 @@
 
 string(TOUPPER ${CMAKE_SYSTEM_NAME}_${CMAKE_SYSTEM_PROCESSOR} output_dir_var)
 set(THIRDPARTY_DIR ${PROJECT_SOURCE_DIR}/thirdparty/${output_dir_var})
+set(COMMON_DIR ${PROJECT_SOURCE_DIR}/common)
+
 # message(STATUS "!!!!!${THIRDPARTY_DIR}")

@@ -52,7 +52,7 @@ set(compile_dirs
     common
     cyber
     cyber_tool
-    #driver
+    driver
     # map
     #thirdparty
 )
