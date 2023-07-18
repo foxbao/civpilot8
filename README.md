@@ -10,87 +10,92 @@ sudo apt install -y libpoco-dev uuid-dev libncurses5-dev python3-dev python3-pip
 python3 -m pip install protobuf==3.14.0
 ```
 
-2. > absl \
+2. > absl
 ```shell
-    wget https://apollo-system.cdn.bcebos.com/archive/6.0/20200225.2.tar.gz
-    tar -xzvf 20200225.2.tar.gz
+wget https://apollo-system.cdn.bcebos.com/archive/6.0/20200225.2.tar.gz
+tar -xzvf 20200225.2.tar.gz
 ```
 
 add the following cmake command in CMakeLists.txt
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 ```shell
-    cmake -DBUILD_SHARED_LIBS=ON -L CMakeLists.txt && make
-    sudo make install
+cmake -DBUILD_SHARED_LIBS=ON -L CMakeLists.txt && make
+sudo make install
 ```
 
 3. > proj
 ```shell
-    sudo apt-get install libproj-dev
-    sudo apt install sqlite3
+sudo apt-get install libproj-dev
+sudo apt install sqlite3
 ```
 Download projxxxx.tar.gz from from https://proj.org/download.html
 ```shell
-	wget https://download.osgeo.org/proj/proj-9.0.1.tar.gz
-    tar -xzvf projxxx.tar.gz
-    cd proj-9.0.1
-    mkdir build
-    cd build
-    cmake ..
-    cmake --build .
-	sudo make install
+wget https://download.osgeo.org/proj/proj-9.0.1.tar.gz
+tar -xzvf projxxx.tar.gz
+cd proj-9.0.1
+mkdir build
+cd build
+cmake ..
+cmake --build .
+sudo make install
 ```
 
 4. > OpenCV
+
 If we want to visualize something, we need to install OpenCV
 ```shell
-    sudo apt-get install libpng-dev
-    sudo apt-get install libjpeg-dev
-    sudo apt-get install libopenexr-dev
-    sudo apt-get install libtiff-dev
-    sudo apt-get install libwebp-dev    
+sudo apt-get install libpng-dev libjpeg-dev libopenexr-dev libtiff-dev libwebp-dev    
 
-    https://docs.opencv.org/4.x/d2/de6/tutorial_py_setup_in_ubuntu.html
-    git clone https://github.com/opencv/opencv.git
+https://docs.opencv.org/4.x/d2/de6/tutorial_py_setup_in_ubuntu.html
+git clone https://github.com/opencv/opencv.git
 
-    mkdir build
-    cd build
-    cmake ../
-    make -j16
-    sudo make install
+mkdir build
+cd build
+cmake ../
+make -j16
+sudo make install
 ```
-5. > VTK 8.2.0 \
-If we want to use Viewer, we need to install VTK
-```shell
-    https://vtk.org/download/
-    cmake-gui (select qt related, then press "configure","generate")
-    cd build
-    make
-    sudo make install 
-    dependencies
-    sudo apt-get install qttools5-dev
-    sudo apt install libxt-dev
-```
-6. > QT 5.12 \
+Attention, if we have already installed Anaconda, it may cause some problems in the installation of OpenCV. Please temporarily move Anaconda
+
+5. > QT 5.12 \
 If we want to use UI, we need to install QT
 ```shell
-    refer to https://doc.qt.io/archives/qt-5.12/linux-building.html
-    https://download.qt.io/archive/qt/5.12/5.12.12/
-    download qt-everywhere-src-5.12.12.tar.xz 
-    xz -d qt-everywhere-src-5.12.12.tar.xz
-    tar -xvf qt-everywhere-src-5.12.12.tar
-    cd qt-everywhere-src-5.12.12
-    ./configure
-    make
-    make install
-    sudo apt install libqt5x11extras5-dev
-    sudo apt install libqt5serialport5
-    sudo apt install libqt5serialport5-dev
+refer to https://doc.qt.io/archives/qt-5.12/linux-building.html
+https://download.qt.io/archive/qt/5.12/5.12.12/
 
-    Download qt-opensource-linux-x64-5.12.12.run
-    Run it and install only Qt-Creator
+download qt-everywhere-src-5.12.12.tar.xz 
+wget https://download.qt.io/archive/qt/5.12/5.12.12/single/qt-everywhere-src-5.12.12.tar.xz
+xz -d qt-everywhere-src-5.12.12.tar.xz
+tar -xvf qt-everywhere-src-5.12.12.tar
+cd qt-everywhere-src-5.12.12
+./configure
+make
+make install
+sudo apt install libqt5x11extras5-dev
+sudo apt install libqt5serialport5
+sudo apt install libqt5serialport5-dev
 
-    sudo apt-get install xserver-xorg
+Download qt-opensource-linux-x64-5.12.12.run
+Run it and install only Qt-Creator
+
+sudo apt-get install xserver-xorg
 ```
+
+6. > VTK 8.2.0 \
+If we want to use Viewer, we need to install VTK
+```shell
+https://vtk.org/download/
+wget https://vtk.org/files/release/8.2/VTK-8.2.0.tar.gz
+tar -xzvf VTK-8.2.0.tar.gz
+cmake-gui (select qt related, then press "configure","generate")
+cd build
+make
+sudo make install 
+dependencies
+sudo apt-get install qttools5-dev
+sudo apt install libxt-dev
+```
+
 ## #2 Build
 
 1. clone
@@ -130,36 +135,53 @@ make -j$(nproc)
 > talker
 
 ```shell
-source setup.bash
+source build/setup.bash
 ./cyber/examples/cyber_example_talker
 ```
 > listener
 
 ```shell
-source setup.bash
+source build/setup.bash
 ./cyber/examples/cyber_example_listener
 ```
 
 2. component
 
 ```shell
-source setup.bash
+source build/setup.bash
 cyber_launch start share/examples/common.launch
 ./cyber/examples/common_component_example/channel_prediction_writer
 ./cyber/examples/common_component_example/channel_test_writer
 ```
 
-## #4 Launch of localization project
+2. cyber_monitor
+```shell
+source build/setup.bash
+cyber_monitor
+```
+
+## #4 Launch of data receiver
 1. Start IMU
 ```shell
-    sudo chmod 777 /dev/ttyXXX (allowing program to read from the serial port of imu)
-	source setup.bash
-    ./build/driver/imu/wheeltec_component /dev/ttyUSB0 1000000
-
-    Or we can simpy use the bash
-    sudo bash ./imu_reading.sh
-    (do not forget to change the /dev/ttyX accordingly)
+sudo chmod 777 /dev/ttyXXX (allowing program to read from the serial port of imu)
+cd build
+source setup.bash
+cd ..
+./build/driver/imu/wheeltec_component /dev/ttyUSB0 1000000
 ```
+Or we can simpy use the bash
+```shell
+sudo bash ./imu_reading.sh
+```
+(do not forget to change the /dev/ttyX accordingly)
+
+2. Start Start gnss reading 
+```shell
+sudo chmod 777 ttyXXX(R3900 is ttyUSBX, and ublox is ttyACMX)
+source build/setup.bash
+./build/driver/gnss/gnss_component_test /dev/ttyUSB1 115200
+```
+
 
 ## #5 Tools
 
