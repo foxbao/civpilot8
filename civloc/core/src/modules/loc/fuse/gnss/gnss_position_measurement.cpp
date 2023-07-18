@@ -77,6 +77,8 @@ void GnssPositionMeasurement::ComputeJacobian() {
   Z_ = Earth::DeltaPosEnuInFirstPoint(p_wa, frame_->pos_);
 }
 
-bool GnssPositionMeasurement::ChiSquareTest() {}
+bool GnssPositionMeasurement::ChiSquareTest() {
+  return true;
+}
 }  // namespace civloc
 }  // namespace civ

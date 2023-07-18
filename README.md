@@ -123,7 +123,7 @@ cmake ..
 make -j$(nproc)
 ```
 
-## #3 Examples
+## #3 Test of Cyber
 
 1. pub/sub
 
@@ -149,7 +149,19 @@ cyber_launch start share/examples/common.launch
 ./cyber/examples/common_component_example/channel_test_writer
 ```
 
-## #4 Tools
+## #4 Launch of localization project
+1. Start IMU
+```shell
+    sudo chmod 777 /dev/ttyXXX (allowing program to read from the serial port of imu)
+	source setup.bash
+    ./build/driver/imu/wheeltec_component /dev/ttyUSB0 1000000
+
+    Or we can simpy use the bash
+    sudo bash ./imu_reading.sh
+    (do not forget to change the /dev/ttyX accordingly)
+```
+
+## #5 Tools
 
 1. channel
 
@@ -221,7 +233,7 @@ Commands:
 	cyber_recorder recover	Recover an exist record.
 ```
 
-## #5 Package
+## #6 Package
 
 ```shell
 cmake -DCMAKE_INSTALL_PREFIX=/you/install/path ..
