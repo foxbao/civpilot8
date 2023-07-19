@@ -1,0 +1,133 @@
+version : "1.1.1"
+
+cacher_cfg {
+  max_delay_ms : 300
+  duration_s : 1.5
+  main_channel_name : "rawimu"
+}
+
+visionmap_cfg {
+  channel_name : "/zhito/visonmap_msg"
+  max_leaf_dimension : 5.0  # KD-Tree构建参数
+  max_leaf_size : 16        # KD-Tree构建参数
+  box_half_width_m : 0.1      # KD-Tree节点二维矩形参数（m）
+  search_distance_m : 50      # 搜索距离（m）
+  sample_interval_m : 1.0     # 车道线采样点间距（m） 
+}
+
+pointcloud_map_cfg {
+  map_path : "/zhito/data/bag/yrt0"
+  search_radius_m : 300
+  map_cfg_file : "map_cfg.pb.txt"
+}
+
+fuse_cfg {
+  mode : ESKF
+  online_estimation_qvv1 : true  # 在线估计标志 [qvi ...]
+  online_estimation_ko : true
+  filter_para {
+    # 初始状态噪声
+    init_pos_error_m : [10, 10, 10]
+    init_vel_error_mps : [1, 1, 1]
+    init_att_error_deg : [5, 5, 5]
+    # init_pos_error_m : [0.10, 0.10, 0.10]
+    # init_vel_error_mps : [0.1, 0.1, 0.1]
+    # init_att_error_deg : [0.1, 0.1, 0.1]
+    init_acc_bias_error_mg : [50, 50, 50]
+    init_gyr_bias_error_dps : [0.5, 0.5, 0.5]
+    init_qvi_error_deg : [5, 0, 5]  
+    init_kod_error : [0.001 , 0.001 , 0.001 ,0.001]
+    # 过程噪声
+    position_random_walk_mpsh : [0.05, 0.05, 1e-1]
+    odo_scale_random_walk_psh : [0.0001, 0.0001, 0.0001, 0.0001]
+    qvv1_random_walk_dpsh : [0, 0, 0]
+  } 
+  gnss_filter {
+    enable_gnss_pos : true
+    enable_gnss_vel : true
+    enable_gnss_dual : true
+    position_noise_m : [3, 3, 1, 0.04]  # 单点, 伪距差分, 浮点 ,固定解对应的位置误差
+    dual_angle_noise_deg : [2, 0, 1] #2° 0° 1°
+    velocity_noise_mps : [0.1, 0.1, 0.1, 0.1] # 单点, 伪距差分, 浮点 ,固定解对应的速度误差
+    farme_judge_time_s : 1.5  #判断多少时间长度内的数据帧
+    max_change_ratio : 0.49
+    pos_std_m_upper_limit : 100
+    residual_drift_m_upper_limit : 1000
+    heading_std_deg_upper_limit : 2
+    heading_std_deg_lower_limit : 0.001    #std=0的双天线测量值
+
+  }
+  vm_filter {
+    enable_nhc : true
+    enable_zupt : true
+    enable_zgbc : true
+    enable_zac : true
+    enable_zpc : true
+    nhc_noise_mps : [0.1, 0.1, 0.1]
+    zupt_noise_mps : [0.05, 0.05, 0.05]
+    zgbc_noise_dps : [0.05, 0.05, 0.05]
+    zac_noise_deg : [2.0, 2.0, 0.5]
+    zpc_noise_m : [0.05, 0.05, 0.05]
+  }
+  wheel_filter{
+    enable_rear_wheel : false
+    enable_front_wheel : true
+    enable_rear_diff : false
+    enable_front_diff : true
+    rear_wheel_noise_mps : [0.1, 0.2, 0.1]
+    front_wheel_noise_mps : [0.1 , 0.2 , 0.1]
+    rear_diff_noise_mps : [0.2, 0.2 ,0.1]
+    front_diff_noise_mps : [0.2, 0.2 , 0.1]
+  }
+  lidar_filter {
+    enable_ndt_map_match : false
+    enable_ndt_frame_match : false
+    ndt_map_match_transfer_prob_threshold : [1, 1]                  # score > 2.5 || transfer_prob < 1.0 时, 丢弃数据
+    ndt_map_match_score_threshold : [2.5, 1]                          
+    ndt_map_match_nice_noise_mps :  [0.2, 0.2, 0.2, 0.5, 0.5, 0.5]    # ndt 匹配的噪声 [m m m , deg deg deg]
+    ndt_map_match_bad_noise_mps :   [5.0, 5.0, 5.0, 2.0, 2.0, 2.0]    # 0.2m->transfer_prob>1, 5m->0.5<transfer_prob<1
+    ndt_frame_match_noise_mps : [0.2, 0.2, 0.2, 0.5, 0.5, 0.5]        # ndt 匹配的噪声 [m m m , deg deg deg]
+  }
+  vision_filter
+  {
+    enable_bev_line : true
+    enable_bev_cubic_curv : false
+    enable_pixel_line : false
+    enable_pixel_cubic_curv :false
+    vision_noise_mps : [0.4, 0.4, 0.4]
+    perc_range_m :[0.0, 30.0]
+    valid_mean_match_dist_m :2.0
+    valid_match_point_dist_m :2.0
+ }
+}
+
+detect_cfg {
+  sample_range_time : 0.5
+  static_continuous_number : 3
+  zero_velocity_detector_threshold : [0.23, 0.086, 4, 1, 1, 5]  # 各个检测指标的零速检测阈值{w_mean(°/s), w_std(°/s), ARE(1), MAG(1), MV(1), GLRT(1)}
+}
+
+lidar_match_cfg {
+    enable_lidar : false
+    online_scan_range_m : [3, 200]
+    ndt_config {
+      res_m : 1.0
+      step_size_m : 0.1 
+      trans_eps_m : 0.01
+      rot_eps_deg : 1.0
+      max_iter : 30
+      score_threshold : 2.5                                # score > 2.5 && transfer_prob < 1.0 时, 重新初始化
+      transfer_prob_threshold : 1.0
+      online_scan_voxel_m : [1.5, 1.5, 1.5]
+      local_map_voxel_m : [0.5, 0.5, 0.5]
+    }
+}
+
+vision_match_cfg {
+  enable_vision : true
+  match_threshold_m : 0.001
+}
+
+io_cfg {
+    data_dir : "/home/baojiali/Downloads/civpilot"
+}

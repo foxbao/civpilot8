@@ -85,6 +85,13 @@ wget https://download.qt.io/archive/qt/5.12/5.12.12/qt-opensource-linux-x64-5.12
 ./qt-opensource-linux-x64-5.12.12.run
 ```
 
+Test QT
+QT designer \
+If everything is OK, we will be able to launch the designer interface
+```shell
+/usr/local/Qt-5.12.12/bin/designer
+```
+
 6. > VTK 8.2.0
 
 If we want to use Viewer, we need to install VTK from https://vtk.org/download/
@@ -98,8 +105,10 @@ sudo apt install libxt-dev
 ```shell
 wget https://vtk.org/files/release/8.2/VTK-8.2.0.tar.gz
 tar -xzvf VTK-8.2.0.tar.gz
-cmake-gui (select qt related, then press "configure","generate")
+sudo apt install cmake-qt-gui
+cd VTK-8.2.0
 cd build
+cmake-gui (source code is folder VTK-8.2.0, and build the binary should be folder build. Select qt related items, then press "configure","generate")
 make
 sudo make install 
 ```
@@ -114,7 +123,8 @@ cd civpilot8
 git checkout -b dev origin/dev
 ```
 
-2. build third party
+2. build third party \
+If we download the code for the first time and want to build from zero, delete the folder third_party and install if they exist
 
 > install
 
@@ -128,9 +138,10 @@ git checkout -b dev origin/dev
 source install/setup.bash
 ```
 
-3. build cyber
+3. build cyber and the whole project
 
 ```shell
+source install/setup.bash
 mkdir build && cd build
 cmake ..
 make -j$(nproc)
@@ -203,13 +214,28 @@ sudo bash ./rtk_reading.sh
 ```
 (do not forget to change the /dev/ttyX accordingly)
 
-4. Start civloc 
+4. Start interface_qt \
+An alternative and easier way to read the sensor data is using the interface_qt, if compiled
+```shell
+source build/setup.bash
+./build/driver/interface_qt/recorder_qt
+```
+
+## #5 Start civloc 
+After the reading from sensor is started, we can launch the localizing program
+
 ```shell
 ./build/civloc/test --flagfile=/home/baojiali/Downloads/civpilot/civloc/conf/vw.conf --minloglevel=0
 ```
 
+## #6 Start civview
+A more sophiscated UI civview is also provided to visually launch and show the localizaion result, which facilitates the debug process. To use it, we need to enable the civview in CMakeLists.txt in root folder
+```shell
+source build/setup.bash
+./build/civview/core/civview_core
+```
 
-## #5 Tools
+## #6 Tools
 
 1. channel
 

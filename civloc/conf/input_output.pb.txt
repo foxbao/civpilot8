@@ -1,0 +1,76 @@
+version: "1.1.1"
+
+mode: Fuse
+
+# input
+cgi610 {
+  name : "/zhito/sensor/gnss/cgi610"
+  rate_hz : 100
+}
+
+raw_cgi610_bestpos {
+  name : "/zhito/rawcgi610/bestpos"
+  rate_hz : 5
+}
+raw_cgi610_bestvel {
+  name : "/zhito/rawcgi610/bestvel"
+  rate_hz : 5
+}
+raw_cgi610_heading2 {
+  name : "/zhito/rawcgi610/heading2"
+  rate_hz : 5
+}
+raw_cgi610_imu {
+  name : "/zhito/rawcgi610/rawimu"
+  rate_hz : 100
+}
+
+perception {
+  name : "/zhito/drivers/horizon_camera"
+  vendor : HORIZON
+  rate_hz : 10
+}
+# perception {
+#  name : "/zhito/drivers/mobileye_camera"
+#  vendor : MOBILEYE
+#  rate_hz : 10
+# }
+# perception {
+#   name : "/zhito/perception/lanefuseToloc"
+#   vendor : ZHITO
+#   rate_hz : 10
+# }
+
+zloc_map {
+  name : "/zhito/zlocmap_msg"
+  rate_hz : 1
+}
+
+chassis {
+  name : "/zhito/canbus/chassis"
+  rate_hz : 100
+}
+
+pointcloud {
+  name : "/zhito/sensor/hesai40/PointCloud2"
+  rate_hz : 10
+}
+
+cpt7 {
+  name : "/zhito/cpt7/inspvax"
+  rate_hz : 20
+}
+
+# output
+
+#  zloc_fuse zloc 融合结果
+zloc_fuse {
+  name : "/zhito/zloc/gnss_imu/pose"
+  rate_hz : 100
+}
+
+# cgi610转发通道
+forward_cfg {
+  name : "/zhito/localization/pose"
+  rate_hz : 100
+}
