@@ -14,9 +14,10 @@ python3 -m pip install protobuf==3.14.0
 ```shell
 wget https://apollo-system.cdn.bcebos.com/archive/6.0/20200225.2.tar.gz
 tar -xzvf 20200225.2.tar.gz
+cd abseil-cpp-20200225.2
 ```
 
-add the following cmake command in CMakeLists.txt
+add the following cmake command in CMakeLists.txt \
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 ```shell
 cmake -DBUILD_SHARED_LIBS=ON -L CMakeLists.txt && make
@@ -31,7 +32,7 @@ sudo apt install sqlite3
 Download projxxxx.tar.gz from from https://proj.org/download.html
 ```shell
 wget https://download.osgeo.org/proj/proj-9.0.1.tar.gz
-tar -xzvf projxxx.tar.gz
+tar -xzvf proj-9.0.1.tar.gz
 cd proj-9.0.1
 mkdir build
 cd build
@@ -48,7 +49,7 @@ sudo apt-get install libpng-dev libjpeg-dev libopenexr-dev libtiff-dev libwebp-d
 
 https://docs.opencv.org/4.x/d2/de6/tutorial_py_setup_in_ubuntu.html
 git clone https://github.com/opencv/opencv.git
-
+cd opencv
 mkdir build
 cd build
 cmake ../
@@ -58,42 +59,49 @@ sudo make install
 Attention, if we have already installed Anaconda, it may cause some problems in the installation of OpenCV. Please temporarily move Anaconda
 
 5. > QT 5.12 \
+
 If we want to use UI, we need to install QT
 ```shell
-refer to https://doc.qt.io/archives/qt-5.12/linux-building.html
-https://download.qt.io/archive/qt/5.12/5.12.12/
+sudo apt-get install libxcb-xfixes0-dev gperf bison flex xserver-xorg libclang-dev
+```
 
+refer to https://doc.qt.io/archives/qt-5.12/linux-building.html
+https://download.qt.io/archive/qt/5.12/5.12.12/ \
 download qt-everywhere-src-5.12.12.tar.xz 
+```shell
 wget https://download.qt.io/archive/qt/5.12/5.12.12/single/qt-everywhere-src-5.12.12.tar.xz
-xz -d qt-everywhere-src-5.12.12.tar.xz
-tar -xvf qt-everywhere-src-5.12.12.tar
+tar -xf qt-everywhere-src-5.12.12.tar.xz
 cd qt-everywhere-src-5.12.12
 ./configure
-make
+make -j16
 make install
 sudo apt install libqt5x11extras5-dev
 sudo apt install libqt5serialport5
 sudo apt install libqt5serialport5-dev
-
-Download qt-opensource-linux-x64-5.12.12.run
-Run it and install only Qt-Creator
-
-sudo apt-get install xserver-xorg
+```
+Download qt-opensource-linux-x64-5.12.12.run, Run it and install only Qt-Creator1
+```shell
+wget https://download.qt.io/archive/qt/5.12/5.12.12/qt-opensource-linux-x64-5.12.12.run
+./qt-opensource-linux-x64-5.12.12.run
 ```
 
-6. > VTK 8.2.0 \
-If we want to use Viewer, we need to install VTK
+6. > VTK 8.2.0
+
+If we want to use Viewer, we need to install VTK from https://vtk.org/download/
+
+dependencies
 ```shell
-https://vtk.org/download/
+sudo apt-get install qttools5-dev
+sudo apt install libxt-dev
+```
+
+```shell
 wget https://vtk.org/files/release/8.2/VTK-8.2.0.tar.gz
 tar -xzvf VTK-8.2.0.tar.gz
 cmake-gui (select qt related, then press "configure","generate")
 cd build
 make
 sudo make install 
-dependencies
-sudo apt-get install qttools5-dev
-sudo apt install libxt-dev
 ```
 
 ## #2 Build
@@ -175,11 +183,29 @@ sudo bash ./imu_reading.sh
 ```
 (do not forget to change the /dev/ttyX accordingly)
 
-2. Start Start gnss reading 
+2. Start gnss reading 
 ```shell
 sudo chmod 777 ttyXXX(R3900 is ttyUSBX, and ublox is ttyACMX)
 source build/setup.bash
 ./build/driver/gnss/gnss_component_test /dev/ttyUSB1 115200
+```
+
+3. Start RTK module and connect with qianxun
+```shell
+sudo chmod 777 ttyXXX
+source /opt/cyber/env/setup.bash
+source build/setup.bash
+./build/driver/qianxun/qianxun_app /dev/ttyUSB1 115200
+```
+Or we can simpy use the bash
+```shell
+sudo bash ./rtk_reading.sh
+```
+(do not forget to change the /dev/ttyX accordingly)
+
+4. Start civloc 
+```shell
+./build/civloc/test --flagfile=/home/baojiali/Downloads/civpilot/civloc/conf/vw.conf --minloglevel=0
 ```
 
 
