@@ -220,6 +220,20 @@ An alternative and easier way to read the sensor data is using the interface_qt,
 source build/setup.bash
 ./build/driver/interface_qt/recorder_qt
 ```
+![example](docs/qt_interface.png)
+
+5. Data Recorder \
+To facilitate the offline debug, we can record the sensor data received into a file
+```shell
+source build/setup.bash
+cyber_recorder record -a -o example_data
+```
+6. Data Player \
+The recorded data can be played again
+```shell
+source build/setup.bash
+cyber_recorder play -f example_data
+```
 
 ## #5 Start civloc 
 After the reading from sensor is started, we can launch the localizing program
@@ -234,6 +248,8 @@ A more sophiscated UI civview is also provided to visually launch and show the l
 source build/setup.bash
 ./build/civview/core/civview_core
 ```
+
+![example](docs/viewer.png)
 
 ## #6 Tools
 
