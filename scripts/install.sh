@@ -148,9 +148,9 @@ function main() {
   echo "############### Install Third Party. ################"
   init
   build_setup
-  # build_nlohmann_json
-  # build_gfamily
-  # build_fastdds
+  build_nlohmann_json
+  build_gfamily
+  build_fastdds
   return
 }
 

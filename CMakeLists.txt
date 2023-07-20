@@ -59,8 +59,8 @@ set(compile_dirs
 # compile only the necessary modules
 list(APPEND compile_dirs
   civmap
-  civview
-#   civloc
+  # civview
+  civloc
   # planning
   # routing
   # 

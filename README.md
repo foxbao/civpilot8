@@ -2,7 +2,7 @@
 
 ## #1 Env
 
-1. > dependence
+1. dependence
 
 ```shell
 sudo apt update
@@ -10,7 +10,7 @@ sudo apt install -y libpoco-dev uuid-dev libncurses5-dev python3-dev python3-pip
 python3 -m pip install protobuf==3.14.0
 ```
 
-2. > absl
+2. absl
 ```shell
 wget https://apollo-system.cdn.bcebos.com/archive/6.0/20200225.2.tar.gz
 tar -xzvf 20200225.2.tar.gz
@@ -24,7 +24,7 @@ cmake -DBUILD_SHARED_LIBS=ON -L CMakeLists.txt && make
 sudo make install
 ```
 
-3. > proj
+3. proj
 ```shell
 sudo apt-get install libproj-dev
 sudo apt install sqlite3
@@ -41,7 +41,7 @@ cmake --build .
 sudo make install
 ```
 
-4. > OpenCV
+4. OpenCV(optional)
 
 If we want to visualize something, we need to install OpenCV
 ```shell
@@ -58,7 +58,7 @@ sudo make install
 ```
 Attention, if we have already installed Anaconda, it may cause some problems in the installation of OpenCV. Please temporarily move Anaconda
 
-5. > QT 5.12 \
+5. QT 5.12(optional)
 
 If we want to use UI, we need to install QT
 ```shell
@@ -92,7 +92,7 @@ If everything is OK, we will be able to launch the designer interface
 /usr/local/Qt-5.12.12/bin/designer
 ```
 
-6. > VTK 8.2.0
+6. VTK 8.2.0(optional)
 
 If we want to use Viewer, we need to install VTK from https://vtk.org/download/
 
@@ -113,9 +113,9 @@ make
 sudo make install 
 ```
 
-## #2 Build
+## #2 Download Code and Build Third Party
 
-1. clone
+1. Download civpilot project
 
 ```shell
 git clone git@github.com:foxbao/civpilot8.git
@@ -123,12 +123,25 @@ cd civpilot8
 git checkout -b dev origin/dev
 ```
 
-2. build third party \
+2. Build third party 
+> Clean existing third parties
+
 If we download the code for the first time and want to build from zero, delete the folder third_party and install if they exist
-
-> install
-
 ```shell
+rm -rf third_party
+rm -rf install
+```
+> Download and install third parties
+
+If we have a good connection to Github, simply run the script. It will download the libs like protobuf, gflags and install them
+```shell
+./scripts/install.sh
+```
+Otherwise, if the connection to Github is poor, which is very common in certain region, we can extract the protobuf, glags and other third party libs in the third_party_civpilot.zip and install them. This zip file is disponible via Baidu storage
+
+The 
+```shell
+unzip -d third_party/ third_party_civpilot.zip
 ./scripts/install.sh
 ```
 
@@ -138,7 +151,7 @@ If we download the code for the first time and want to build from zero, delete t
 source install/setup.bash
 ```
 
-3. build cyber and the whole project
+## #3 Build cyber and the whole project
 
 ```shell
 source install/setup.bash
@@ -183,9 +196,7 @@ cyber_monitor
 1. Start IMU
 ```shell
 sudo chmod 777 /dev/ttyXXX (allowing program to read from the serial port of imu)
-cd build
-source setup.bash
-cd ..
+source build/setup.bash
 ./build/driver/imu/wheeltec_component /dev/ttyUSB0 1000000
 ```
 Or we can simpy use the bash
@@ -204,7 +215,6 @@ source build/setup.bash
 3. Start RTK module and connect with qianxun
 ```shell
 sudo chmod 777 ttyXXX
-source /opt/cyber/env/setup.bash
 source build/setup.bash
 ./build/driver/qianxun/qianxun_app /dev/ttyUSB1 115200
 ```
@@ -237,9 +247,15 @@ cyber_recorder play -f example_data
 
 ## #5 Start civloc 
 After the reading from sensor is started, we can launch the localizing program
+1. Online mode
 
 ```shell
 ./build/civloc/test --flagfile=/home/baojiali/Downloads/civpilot/civloc/conf/vw.conf --minloglevel=0
+```
+
+2. Offline mode
+```shell
+
 ```
 
 ## #6 Start civview
