@@ -35,14 +35,16 @@ void DataVisitor(std::shared_ptr<CivLocComponent> component) {
   reader["/GNGGA"] = [component](std::string const content) {
     component->OnGetGNGGAFrame(Str2Frame<GNSSProto>(content));
   };
-
+  
   reader.Play(FLAGS_recorder_file_path);
 }
 
 int main(int argc, char* argv[]) {
   apollo::cyber::Init("civ_component_offline");
   google::ParseCommandLineFlags(&argc, &argv, true);
-
+  std::cout<<"start offline localizer!"<<std::endl;
+  std::cout<<"FLAGS_dag_file_path:"<<FLAGS_dag_file_path<<std::endl;
+  std::cout<<"FLAGS_recorder_file_path:"<<FLAGS_recorder_file_path<<std::endl;
   std::shared_ptr<CivLocComponent> civloc =
       std::make_shared<CivLocComponent>(FLAGS_dag_file_path);
   civloc->set_input_data_dir(FLAGS_recorder_file_path);

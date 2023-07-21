@@ -6,8 +6,8 @@ module_config {
       class_name : "CivLocComponent"
       config {
         name : "civlog"
-        config_file_path : "/home/baojiali/Downloads/civpilot/civloc/middle_ware/cyber/conf/input_output.pb.txt"
-        flag_file_path : "/home/baojiali/Downloads/civpilot/civloc/middle_ware/cyber/conf/vw.conf"
+        config_file_path : "/home/baojiali/Downloads/civpilot8/civloc/middle_ware/cyber/conf/input_output.pb.txt"
+        flag_file_path : "/home/baojiali/Downloads/civpilot8/civloc/middle_ware/cyber/conf/vw.conf"
       }
     }
 }

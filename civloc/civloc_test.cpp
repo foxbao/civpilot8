@@ -58,10 +58,10 @@ int main(int argc, char **argv) {
 
   apollo::cyber::WaitForShutdown();
 
-  // using civ::civloc::CivLocComponent;
-  // std::shared_ptr<CivLocComponent> civloc = std::make_shared<CivLocComponent>(
-  //     FLAGS_config_file_path, FLAGS_locator_setting_pth,
-  //     FLAGS_sensors_setting_pth);
+  using civ::civloc::CivLocComponent;
+  std::shared_ptr<CivLocComponent> civloc = std::make_shared<CivLocComponent>(
+      FLAGS_config_file_path, FLAGS_locator_setting_pth,
+      FLAGS_sensors_setting_pth);
 
   // civloc->ReadKittiData(FLAGS_data_folder, FLAGS_timestamps_file);
   // int aaa = 1;

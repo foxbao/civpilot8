@@ -18,7 +18,7 @@ set(dir_list
 	gnss
 	imu
 	qianxun
-	interface_qt
+	# interface_qt
 )
 
 foreach(item ${dir_list})

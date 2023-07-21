@@ -138,8 +138,10 @@ If we have a good connection to Github, simply run the script. It will download 
 ./scripts/install.sh
 ```
 Otherwise, if the connection to Github is poor, which is very common in certain region, we can extract the protobuf, glags and other third party libs in the third_party_civpilot.zip and install them. This zip file is disponible via Baidu storage
+https://pan.baidu.com/s/1racV6nXaHjWpa3d7RAci-Q
+code:1234
 
-The 
+Run at the project folder
 ```shell
 unzip -d third_party/ third_party_civpilot.zip
 ./scripts/install.sh
@@ -248,15 +250,24 @@ cyber_recorder play -f example_data
 ## #5 Start civloc 
 After the reading from sensor is started, we can launch the localizing program
 1. Online mode
-
+(we may need to modify the path of the vw.conf)
 ```shell
-./build/civloc/test --flagfile=/home/baojiali/Downloads/civpilot/civloc/conf/vw.conf --minloglevel=0
+./build/civloc/test --flagfile=/home/baojiali/Downloads/civpilot8/civloc/conf/vw.conf --minloglevel=0
+
 ```
 
 2. Offline mode
-```shell
 
+The offline reads the sensor data like 202207211650.0000* directly and run the localizing program, which facilitates the debug.
+```shell
+./build/civloc/middle_ware/cyber/tool/civloc_component_offline -dag_file_path=/home/baojiali/Downloads/civpilot8/civloc/middle_ware/cyber/dag/HS5.dag -recorder_file_path=/home/baojiali/Downloads/civpilot8/data/202207211650/202207211650.0000*
 ```
+Similarly, we can use
+```shell
+cyber_monitor
+```  
+to check if the localization result is output, or even use the civview to visually check as described in the following chapter
+
 
 ## #6 Start civview
 A more sophiscated UI civview is also provided to visually launch and show the localizaion result, which facilitates the debug process. To use it, we need to enable the civview in CMakeLists.txt in root folder
