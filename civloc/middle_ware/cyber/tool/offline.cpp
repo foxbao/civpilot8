@@ -24,14 +24,17 @@ using civ::civloc::IMUProto;
 using civ::cyber_tool::CyberRecordReader;
 // using civ::civloc::tool::CyberRecordWriter;
 
+// Directly read IMU, GNSS data from the saved recorder file, without the topic
 void DataVisitor(std::shared_ptr<CivLocComponent> component) {
   CyberRecordReader reader;
   auto civloc_config = component->get_config();
+  // read the IMU data
   reader[civloc_config->raw_wheeltec_imu().name()] =
       [component](std::string const content) {
         component->OnGetRawImuFrame(Str2Frame<IMUProto>(content));
       };
 
+  // read the GNSS data
   reader["/GNGGA"] = [component](std::string const content) {
     component->OnGetGNGGAFrame(Str2Frame<GNSSProto>(content));
   };

@@ -249,8 +249,14 @@ bool CivLocComponent::InitIO() {
   reader_config.channel_name = raw_imu.name();
   reader_config.pending_queue_size = raw_imu.rate_hz() * 2;
 
-  node_->CreateReader<IMUProto>(
+  imu_listener_=node_->CreateReader<IMUProto>(
       reader_config, [this](auto const &msg) { this->OnGetRawImuFrame(msg); });
+
+  gnss_listener_=node_->CreateReader<GNSSProto>(
+      "/GNGGA",[this](auto const &msg){
+        this->OnGetGNGGAFrame(msg);
+      }
+  );
 
   msfr_writer_ =
       node_->CreateWriter<LocalizationEstimate>("LocalizationEstimation");

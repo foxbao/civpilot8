@@ -41,7 +41,7 @@ cmake --build .
 sudo make install
 ```
 
-4. OpenCV(optional)
+4. OpenCV (Optional)
 
 If we want to visualize something, we need to install OpenCV
 ```shell
@@ -58,7 +58,7 @@ sudo make install
 ```
 Attention, if we have already installed Anaconda, it may cause some problems in the installation of OpenCV. Please temporarily move Anaconda
 
-5. QT 5.12(optional)
+5. QT 5.12 (Optional)
 
 If we want to use UI, we need to install QT
 ```shell
@@ -92,7 +92,7 @@ If everything is OK, we will be able to launch the designer interface
 /usr/local/Qt-5.12.12/bin/designer
 ```
 
-6. VTK 8.2.0(optional)
+6. VTK 8.2.0 (Optional)
 
 If we want to use Viewer, we need to install VTK from https://vtk.org/download/
 
@@ -170,13 +170,13 @@ make -j$(nproc)
 
 ```shell
 source build/setup.bash
-./cyber/examples/cyber_example_talker
+./build/cyber/examples/cyber_example_talker
 ```
 > listener
 
 ```shell
 source build/setup.bash
-./cyber/examples/cyber_example_listener
+./build/cyber/examples/cyber_example_listener
 ```
 
 2. component
@@ -201,6 +201,12 @@ sudo chmod 777 /dev/ttyXXX (allowing program to read from the serial port of imu
 source build/setup.bash
 ./build/driver/imu/wheeltec_component /dev/ttyUSB0 1000000
 ```
+If everything OK, we can check the imu data in cyber_monitor
+
+<img src="docs/imu_monitor_1.png" width="400">
+
+<img src="docs/imu_monitor_2.png" width="400">
+
 Or we can simpy use the bash
 ```shell
 sudo bash ./imu_reading.sh
@@ -213,6 +219,8 @@ sudo chmod 777 ttyXXX(R3900 is ttyUSBX, and ublox is ttyACMX)
 source build/setup.bash
 ./build/driver/gnss/gnss_component_test /dev/ttyUSB1 115200
 ```
+
+If everything OK, we can check the gnss data in cyber_monitor
 
 3. Start RTK module and connect with qianxun
 ```shell
@@ -227,12 +235,12 @@ sudo bash ./rtk_reading.sh
 (do not forget to change the /dev/ttyX accordingly)
 
 4. Start interface_qt \
-An alternative and easier way to read the sensor data is using the interface_qt, if compiled
+An alternative and easier way to read the sensor data is using the interface_qt, which requires the qt to be built, and need to activate the compilation in driver/CMakeLists.txt
 ```shell
 source build/setup.bash
 ./build/driver/interface_qt/recorder_qt
 ```
-![example](docs/qt_interface.png)
+<img src="docs/qt_interface.png" width="400">
 
 5. Data Recorder \
 To facilitate the offline debug, we can record the sensor data received into a file
@@ -248,12 +256,14 @@ cyber_recorder play -f example_data
 ```
 
 ## #5 Start civloc 
-After the reading from sensor is started, we can launch the localizing program
+After the reading from sensor is started, we can launch the Online localization program civloc. It reads in the sensor information from topics of cyber, and then uses filter to calculate the localization
 1. Online mode
 (we may need to modify the path of the vw.conf)
 ```shell
-./build/civloc/test --flagfile=/home/baojiali/Downloads/civpilot8/civloc/conf/vw.conf --minloglevel=0
 
+./build/civloc/test -dag_file_path=/home/baojiali/Downloads/civpilot8/civloc/middle_ware/cyber/dag/HS5.dag
+
+note: we need to figure out --minloglevel=0
 ```
 
 2. Offline mode
@@ -270,16 +280,16 @@ to check if the localization result is output, or even use the civview to visual
 
 
 ## #6 Start civview
-A more sophiscated UI civview is also provided to visually launch and show the localizaion result, which facilitates the debug process. To use it, we need to enable the civview in CMakeLists.txt in root folder
+A more sophiscated UI civview is also provided to visually show the map and localizaion result, which facilitates the debug process. To use it, we need to enable the civview in CMakeLists.txt in root folder
 ```shell
 source build/setup.bash
 ./build/civview/core/civview_core
 ```
 
-![example](docs/viewer.png)
+<img src="docs/viewer.png" width="400">
 
 ## #6 Tools
-
+Here are some useful tools provided by Cyber
 1. channel
 
 > list
@@ -297,7 +307,7 @@ cyber_channel list
 source setup.bash
 cyber_channel echo /apollo/test
 ```
-![example](docs/cyber_echo.png)
+<img src="docs/cyber_echo.png" width="400">
 
 > more ...
 
