@@ -1,8 +1,54 @@
-# Apollo(v8.0.0) CyberRT
+# CivPilot
+CivPilot is an autonomous driving system, mainly focusing on the vehicle localization modules
 
-## #1 Env
+## Table of Contents
 
-1. dependence
+1. [Introduction](#introduction)
+2. [Docker Version Installation](#docker-version-installation)
+3. [Normal Version Installation](#normal-version-installation)
+4. [Start Sensor](#start-senser)
+5. [Start CivLoc](#start-civloc)
+6. [Start CivView](#start-civview)
+7. [Tools](#tools)
+## Introduction
+
+## Docker Version Installation
+The easiest way is to build the docker and run the program in container.
+### Download source code
+```shell
+git clone git@github.com:foxbao/civpilot8.git
+```
+And checkout the dev branch
+```shell
+cd civpilot8
+git checkout -b dev origin/dev
+```
+### Start Docker Container
+```shell
+bash docker/scripts/dev_start.sh
+```
+
+### Enter Docker Container
+```shell
+```
+
+## Normal Version Installation
+
+If we do not want to use docker and hope to know every details in the installation to make sure that everything is OK, we can use the normal installation mode.
+### Download source code
+
+```shell
+git clone git@github.com:foxbao/civpilot8.git
+
+```
+And checkout the dev branch
+```shell
+cd civpilot8
+git checkout -b dev origin/dev
+```
+
+### dependency
+1. libs
 
 ```shell
 sudo apt update
@@ -113,7 +159,7 @@ make
 sudo make install 
 ```
 
-## #2 Download Code and Build Third Party
+### Download Code and Build Third Party
 
 1. Download civpilot project
 
@@ -153,7 +199,7 @@ unzip -d third_party/ third_party_civpilot.zip
 source install/setup.bash
 ```
 
-## #3 Build cyber and the whole project
+### Build cyber and the whole project
 
 ```shell
 source install/setup.bash
@@ -162,7 +208,7 @@ cmake ..
 make -j$(nproc)
 ```
 
-## #3 Test of Cyber
+### Test of Cyber
 
 1. pub/sub
 
@@ -194,7 +240,7 @@ source build/setup.bash
 cyber_monitor
 ```
 
-## #4 Launch of data receiver
+## Start Senser
 1. Start IMU
 ```shell
 sudo chmod 777 /dev/ttyXXX (allowing program to read from the serial port of imu)
@@ -247,15 +293,17 @@ To facilitate the offline debug, we can record the sensor data received into a f
 ```shell
 source build/setup.bash
 cyber_recorder record -a -o example_data
+cyber_recorder record -a -o 202307251424
 ```
 6. Data Player \
 The recorded data can be played again
 ```shell
 source build/setup.bash
 cyber_recorder play -f example_data
+cyber_recorder play -f 202307251424.0000*
 ```
 
-## #5 Start civloc 
+## Start civloc 
 After the reading from sensor is started, we can launch the Online localization program civloc. It reads in the sensor information from topics of cyber, and then uses filter to calculate the localization
 1. Online mode
 (we may need to modify the path of the vw.conf)
@@ -265,6 +313,7 @@ After the reading from sensor is started, we can launch the Online localization 
 
 note: we need to figure out --minloglevel=0
 ```
+You can also use cyber_recoder play to play a file and then use the online mode
 
 2. Offline mode
 
@@ -279,7 +328,7 @@ cyber_monitor
 to check if the localization result is output, or even use the civview to visually check as described in the following chapter
 
 
-## #6 Start civview
+## Start Civview
 A more sophiscated UI civview is also provided to visually show the map and localizaion result, which facilitates the debug process. To use it, we need to enable the civview in CMakeLists.txt in root folder
 ```shell
 source build/setup.bash
@@ -288,14 +337,14 @@ source build/setup.bash
 
 <img src="docs/viewer.png" width="400">
 
-## #6 Tools
+## Tools
 Here are some useful tools provided by Cyber
 1. channel
 
 > list
 
 ```shell
-source setup.bash
+source build/setup.bash
 cyber_channel list
 
 # The number of channels is:  1
@@ -304,7 +353,7 @@ cyber_channel list
 
 > echo
 ```shell
-source setup.bash
+source build/setup.bash
 cyber_channel echo /apollo/test
 ```
 <img src="docs/cyber_echo.png" width="400">
