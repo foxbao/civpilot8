@@ -1,0 +1,1 @@
+docker build  -f base.x86_64.dockerfile -t baojiali:test .

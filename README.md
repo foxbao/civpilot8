@@ -4,17 +4,16 @@ CivPilot is an autonomous driving system, mainly focusing on the vehicle localiz
 ## Table of Contents
 
 1. [Introduction](#introduction)
-2. [Docker Version Installation](#docker-version-installation)
-3. [Normal Version Installation](#normal-version-installation)
-4. [Start Sensor](#start-senser)
-5. [Start CivLoc](#start-civloc)
-6. [Start CivView](#start-civview)
-7. [Tools](#tools)
+2. [Get Code](#download-source-sode)
+3. [Docker Version Installation](#docker-version-installation)
+4. [Normal Version Installation](#normal-version-installation)
+5. [Start Sensor](#start-senser)
+6. [Start CivLoc](#start-civloc)
+7. [Start CivView](#start-civview)
+8. [Tools](#tools)
 ## Introduction
 
-## Docker Version Installation
-The easiest way is to build the docker and run the program in container.
-### Download source code
+## Download Source Code
 ```shell
 git clone git@github.com:foxbao/civpilot8.git
 ```
@@ -23,41 +22,40 @@ And checkout the dev branch
 cd civpilot8
 git checkout -b dev origin/dev
 ```
-
+## Docker Version Installation
+The easiest way is to build the docker and then build and run the program in container.
 ### Build Docker
 refer to docker/build/README.md
-
+```shell
+cd docker/build
+bash build_docker.sh
+```
 
 ### Start Docker Container
 ```shell
-bash docker/scripts/dev_start.sh
+cd civpilot8
+bash ./docker_start.sh
 ```
+
 
 ### Enter Docker Container
 ```shell
+cd civpilot8
+bash ./docker_into.sh
 ```
+After that, all the compiling or running of program should be done in the container
 
 ## Normal Version Installation
 
 If we do not want to use docker and hope to know every details in the installation to make sure that everything is OK, we can use the normal installation mode.
 ### Download source code
 
-```shell
-git clone git@github.com:foxbao/civpilot8.git
-
-```
-And checkout the dev branch
-```shell
-cd civpilot8
-git checkout -b dev origin/dev
-```
-
 ### dependency
 1. libs
 
 ```shell
 sudo apt update
-sudo apt install -y libpoco-dev uuid-dev libncurses5-dev python3-dev python3-pip libeigen3-dev
+sudo apt install -y libpoco-dev uuid-dev libncurses5-dev python3-dev python3-pip libeigen3-dev curl libcurl4-openssl-dev
 python3 -m pip install protobuf==3.14.0
 ```
 
@@ -71,14 +69,14 @@ cd abseil-cpp-20200225.2
 add the following cmake command in CMakeLists.txt \
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 ```shell
-cmake -DBUILD_SHARED_LIBS=ON -L CMakeLists.txt && make
+sed -i '23i set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")' CMakeLists.txt
+cmake -DBUILD_SHARED_LIBS=ON -L CMakeLists.txt && make -j$(nproc)
 sudo make install
 ```
 
 3. proj
 ```shell
-sudo apt-get install libproj-dev
-sudo apt install sqlite3
+sudo apt-get install libproj-dev sqlite3 libtiff-dev
 ```
 Download projxxxx.tar.gz from from https://proj.org/download.html
 ```shell
