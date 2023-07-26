@@ -145,6 +145,7 @@ function determine_dev_image() {
             exit 3
         fi
     fi
+    echo "DOCKER_REPO:${DOCKER_REPO}"
     DEV_IMAGE="${DOCKER_REPO}:${version}"
 }
 
@@ -198,11 +199,11 @@ function main()
     if [[ "${USE_LOCAL_IMAGE}" -gt 0 ]]; then
         info "Start docker container based on local image : ${DEV_IMAGE}"
     fi
-
-    if ! docker_pull "${DEV_IMAGE}"; then
-        error "Failed to pull docker image ${DEV_IMAGE}"
-        exit 1
-    fi
+    echo ${DEV_IMAGE}
+    # if ! docker_pull "${DEV_IMAGE}"; then
+    #     error "Failed to pull docker image ${DEV_IMAGE}"
+    #     exit 1
+    # fi
     ok "Congratulations! You have successfully finished setting up CivPilot Dev Environment."
     ok "Enjoy!"
 }

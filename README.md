@@ -23,6 +23,11 @@ And checkout the dev branch
 cd civpilot8
 git checkout -b dev origin/dev
 ```
+
+### Build Docker
+refer to docker/build/README.md
+
+
 ### Start Docker Container
 ```shell
 bash docker/scripts/dev_start.sh
@@ -300,7 +305,13 @@ The recorded data can be played again
 ```shell
 source build/setup.bash
 cyber_recorder play -f example_data
-cyber_recorder play -f 202307251424.0000*
+```
+We have prepared some sample data, so you can play this file to facilitate the debug, which is disponible vis baidu
+https://pan.baidu.com/s/1tL7HkXVNG8o9wTCJdhUepQ
+code:1234
+```shell
+unzip data data.zip
+cyber_recorder play -f data/202207211650/202207211650.000*
 ```
 
 ## Start civloc 
@@ -308,11 +319,11 @@ After the reading from sensor is started, we can launch the Online localization 
 1. Online mode
 (we may need to modify the path of the vw.conf)
 ```shell
-
-./build/civloc/test -dag_file_path=/home/baojiali/Downloads/civpilot8/civloc/middle_ware/cyber/dag/HS5.dag
-
-note: we need to figure out --minloglevel=0
+source build/setup.bash
+./build/civloc/test -dag_file_path=./civloc/middle_ware/cyber/dag/HS5.dag
 ```
+note1: we need to figure out --minloglevel=0 \
+note2: if we are not in docker, we need to change the path of config_file_path and flag_file_path in HS5.dag, and also the paths in vw.conf \
 You can also use cyber_recoder play to play a file and then use the online mode
 
 2. Offline mode
@@ -333,6 +344,13 @@ A more sophiscated UI civview is also provided to visually show the map and loca
 ```shell
 source build/setup.bash
 ./build/civview/core/civview_core
+```
+
+We have prepared the map data, which is disponible via
+https://pan.baidu.com/s/12udaR8wdoXRxJl70IzdYQQ 
+code:1234
+```shell
+unzip map_data map_data.zip
 ```
 
 <img src="docs/viewer.png" width="400">

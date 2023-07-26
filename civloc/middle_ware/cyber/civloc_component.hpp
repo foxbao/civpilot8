@@ -40,9 +40,9 @@ class CivLocComponent : public Component<> {
  public:
   CivLocComponent() {}
   CivLocComponent(std::string const &dag_file_path);
-  CivLocComponent(std::string const &config_file_path,
-                  std::string const &locator_setting_path,
-                  std::string const &sensors_setting_path);
+  // CivLocComponent(std::string const &config_file_path,
+  //                 std::string const &locator_setting_path,
+  //                 std::string const &sensors_setting_path);
   ~CivLocComponent();
   bool Init() override;
   bool InitCore();

@@ -62,18 +62,18 @@ CivLocComponent::CivLocComponent(std::string const &dag_file_path) {
 }
 
 CivLocComponent::~CivLocComponent() { fused_output_data_.close(); }
-CivLocComponent::CivLocComponent(std::string const &config_file_path,
-                                 std::string const &locator_setting_path,
-                                 std::string const &sensors_setting_path) {
-  // config_file_path_ = config_file_path;
-  // locator_setting_pth_ = locator_setting_path;
-  // sensors_setting_pth_ = sensors_setting_path;
+// CivLocComponent::CivLocComponent(std::string const &config_file_path,
+//                                  std::string const &locator_setting_path,
+//                                  std::string const &sensors_setting_path) {
+//   // config_file_path_ = config_file_path;
+//   // locator_setting_pth_ = locator_setting_path;
+//   // sensors_setting_pth_ = sensors_setting_path;
 
-  // fused_output_data_path_ =
-  // "/home/baojiali/Downloads/civpilot/loc/raw_imu.txt"; output_data_ =
-  // std::ofstream(fused_output_data_path_, std::ios::app); sp_imgprocessor_ =
-  // std::make_shared<IMGPROCESSOR>();
-}
+//   // fused_output_data_path_ =
+//   // "/home/baojiali/Downloads/civpilot/loc/raw_imu.txt"; output_data_ =
+//   // std::ofstream(fused_output_data_path_, std::ios::app); sp_imgprocessor_ =
+//   // std::make_shared<IMGPROCESSOR>();
+// }
 
 bool CivLocComponent::Init() {
   InitCore();
