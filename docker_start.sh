@@ -1,1 +1,1 @@
-docker run --rm -i -d -v `pwd`:/home/baojiali/civpilot8 --device=/dev/ttyUSB0:/dev/ttyUSB0 --name civauto baojiali:test
+docker run --rm -i -d -v `pwd`:/home/baojiali/Downloads/civpilot8 --device=/dev/ttyUSB0:/dev/ttyUSB0 --name civauto civ:civauto

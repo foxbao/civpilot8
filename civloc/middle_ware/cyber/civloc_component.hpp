@@ -24,7 +24,7 @@
 #include "cyber/cyber.h"
 #include "cyber/node/node.h"
 #include "middle_ware/cyber/message_convert.hpp"
-#include "middle_ware/cyber/tool/imgprocessor.hpp"
+// #include "middle_ware/cyber/tool/imgprocessor.hpp"
 
 #include "core/imu_gps_localizer/imu_gps_localizer.h"
 
@@ -78,7 +78,7 @@ class CivLocComponent : public Component<> {
   std::string gnss_output_data_path_;
   std::ofstream gnss_output_data_;
 
-  std::shared_ptr<IMGPROCESSOR> sp_imgprocessor_;
+  // std::shared_ptr<IMGPROCESSOR> sp_imgprocessor_;
   bool gngga_test_sent = false;
 };
 }  // namespace civloc

@@ -4,7 +4,7 @@ CivPilot is an autonomous driving system, mainly focusing on the vehicle localiz
 ## Table of Contents
 
 1. [Introduction](#introduction)
-2. [Get Code](#download-source-sode)
+2. [Get Code](#download-source-code)
 3. [Docker Version Installation](#docker-version-installation)
 4. [Normal Version Installation](#normal-version-installation)
 5. [Start Sensor](#start-senser)
@@ -31,19 +31,31 @@ cd docker/build
 bash build_docker.sh
 ```
 
+After building the docker image, we can see our image by 
+```shell
+sudo docker images
+```
+
+<img src="docs/docker_image.png" width="400">
+
+
 ### Start Docker Container
 ```shell
 cd civpilot8
 bash ./docker_start.sh
 ```
-
+Now the container is started, we can 
+```shell
+sudo docker container ls
+```
+<img src="docs/docker_container.png" width="400">
 
 ### Enter Docker Container
 ```shell
 cd civpilot8
 bash ./docker_into.sh
 ```
-After that, all the compiling or running of program should be done in the container
+After that, all the compiling or running of program, and even the unzip of third_party.zip should be done in the container
 
 ## Normal Version Installation
 
@@ -55,7 +67,8 @@ If we do not want to use docker and hope to know every details in the installati
 
 ```shell
 sudo apt update
-sudo apt install -y libpoco-dev uuid-dev libncurses5-dev python3-dev python3-pip libeigen3-dev curl libcurl4-openssl-dev
+sudo apt install -y libpoco-dev uuid-dev libncurses5-dev python3-dev python3-pip libeigen3-dev 
+sudo apt install -y wget cmake curl libcurl4-openssl-dev git
 python3 -m pip install protobuf==3.14.0
 ```
 
@@ -164,15 +177,7 @@ sudo make install
 
 ### Download Code and Build Third Party
 
-1. Download civpilot project
-
-```shell
-git clone git@github.com:foxbao/civpilot8.git
-cd civpilot8
-git checkout -b dev origin/dev
-```
-
-2. Build third party 
+1. Build third party 
 > Clean existing third parties
 
 If we download the code for the first time and want to build from zero, delete the folder third_party and install if they exist
@@ -186,6 +191,9 @@ If we have a good connection to Github, simply run the script. It will download 
 ```shell
 ./scripts/install.sh
 ```
+
+> Use local third_party file to build
+
 Otherwise, if the connection to Github is poor, which is very common in certain region, we can extract the protobuf, glags and other third party libs in the third_party_civpilot.zip and install them. This zip file is disponible via Baidu storage
 https://pan.baidu.com/s/1racV6nXaHjWpa3d7RAci-Q
 code:1234
@@ -283,7 +291,8 @@ sudo bash ./rtk_reading.sh
 ```
 (do not forget to change the /dev/ttyX accordingly)
 
-4. Start interface_qt \
+4. Start interface_qt
+
 An alternative and easier way to read the sensor data is using the interface_qt, which requires the qt to be built, and need to activate the compilation in driver/CMakeLists.txt
 ```shell
 source build/setup.bash

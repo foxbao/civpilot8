@@ -41,7 +41,7 @@ std::shared_ptr<Cacher> g_cacher = nullptr;
 std::shared_ptr<StateServer> g_state_server = nullptr;
 
 Locator::Locator(crString locator_cfg_pth, crString sensors_setting_cfg_pth) {
-  sp_imgprocessor_ = std::make_shared<IMGPROCESSOR>();
+  // sp_imgprocessor_ = std::make_shared<IMGPROCESSOR>();
   using civ::common::file::GetProtoFromFile;
   common::coord_transform::Earth::SetOrigin(Eigen::Vector3d(civ::common::util::g_ori_pos_deg[0],
                                    civ::common::util::g_ori_pos_deg[1],
@@ -165,7 +165,7 @@ void Locator::FuseTaskSingle() {
     std::cout << "one_frame->type_:" << one_frame->type_ << std::endl;
     if (one_frame->type_ == ZFrameType::GNSS_ALL) {
       sp_cZGnss gnss = std::dynamic_pointer_cast<ZGnss const>(one_frame);
-      sp_imgprocessor_->PlotRawGNSS(gnss);
+      // sp_imgprocessor_->PlotRawGNSS(gnss);
     }
 
     sp_cState fused_state = fuse_processor_->PredictAndDoFuse(one_frame);
@@ -173,8 +173,8 @@ void Locator::FuseTaskSingle() {
     // auto lastest_fused_state=fuse_processor_->get_lastest_fused_state();
     if (fused_state) {
       std::cout << "fused state time:" << fused_state->t0_ << std::endl;
-      sp_imgprocessor_->PlotSaveStateLLH(fused_state, "_fused_filter",
-                                         cv::Scalar(0, 0, 255));
+      // sp_imgprocessor_->PlotSaveStateLLH(fused_state, "_fused_filter",
+      //                                    cv::Scalar(0, 0, 255));
     }
 
     // sp_cState fused_state = fuse_processor_->PredictAndDoFuse(one_frame);

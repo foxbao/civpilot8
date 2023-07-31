@@ -157,8 +157,8 @@ void CivLocComponent::ReadKittiData(crString data_folder,
             PredictStateMecanization(mecha_current_state, imu_delay);
 
         if (mecha_current_state && i % 10 == 9) {
-          sp_imgprocessor_->PlotSaveStateLLH(mecha_current_state,
-                                             "_imu_mecha ");
+          // sp_imgprocessor_->PlotSaveStateLLH(mecha_current_state,
+          //                                    "_imu_mecha ");
         }
       }
     }

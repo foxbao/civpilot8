@@ -23,7 +23,7 @@
 #include <memory>
 #include <mutex>
 #include <map>
-#include "middle_ware/cyber/tool/imgprocessor.hpp"
+// #include "middle_ware/cyber/tool/imgprocessor.hpp"
 #include "modules/common/inner_types.hpp"
 #include "modules/loc/fuse/filter.hpp"
 
@@ -77,7 +77,7 @@ class Locator {
   std::future<void> future_fuse_task_;
   std::deque<sp_cZFrame> frame_tobe_send_;
   // std::ofstream output_data_;
-  std::shared_ptr<IMGPROCESSOR> sp_imgprocessor_;
+  // std::shared_ptr<IMGPROCESSOR> sp_imgprocessor_;
 
  public:
   std::map<std::string, std::ofstream> files_;
