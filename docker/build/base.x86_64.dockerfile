@@ -9,7 +9,7 @@ RUN apt-get install -y wget cmake curl libcurl4-openssl-dev git
 
 # cmake 
 WORKDIR /Downloads
-ADD cmake-3.16.0.tar.gz /Downloads
+COPY cmake-3.16.0.tar.gz /Downloads
 RUN tar -zxvf cmake-3.16.0.tar.gz
 WORKDIR /Downloads/cmake-3.16.0
 RUN ./bootstrap
@@ -26,9 +26,9 @@ RUN cmake -DBUILD_SHARED_LIBS=ON -L CMakeLists.txt && make -j$(nproc)
 RUN make install
 
 # third party
-WORKDIR /home/baojiali/Downloads/third
-ADD third_party_civpilot.zip /home/baojiali/Downloads/third
-ADD scripts /home/baojiali/Downloads/third/scripts
+WORKDIR /home/baojiali/Downloads
+ADD third_party_civpilot.zip /home/baojiali/Downloads/
+ADD scripts /home/baojiali/Downloads/scripts
 RUN unzip -d third_party third_party_civpilot.zip
 RUN bash ./scripts/install.sh
 

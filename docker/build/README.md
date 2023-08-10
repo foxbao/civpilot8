@@ -1,9 +1,32 @@
 # Apollo Docker Image Build Process
 
+## Table of Contents
+
+
+
+## Build preparation
+The easiest way is to build the docker and then build and run the program in container.
+Make sure that all these files are available in docker/build because they will be used in the building of docker
+```shell
+├── base.x86_64.dockerfile
+├── build_docker.sh
+├── cmake-3.16.0.tar.gz
+├── README.md
+├── scripts
+│   ├── apollo.bashrc
+│   ├── dev_start.sh
+│   ├── docker_base.sh
+│   ├── FastRTPS_1.5.0.patch
+│   └── install.sh
+└── third_party_civpilot.zip
+```
+
+
 ## build the light Docker
 we can build a light docker without visualization function, so without OpenCV, QT or VTK
 ```shell
-bash ./build_docker.sh
+cd docker/build
+docker build  -f base.x86_64.dockerfile -t civ:civauto .
 ```
 
 ## Start the docker

@@ -36,14 +36,28 @@ git checkout -b dev origin/dev
 ```
 ## Docker Version Installation
 The easiest way is to build the docker and then build and run the program in container.
+Make sure that all these files are available in docker/build because they will be used in the building of docker
+```shell
+├── base.x86_64.dockerfile
+├── build_docker.sh
+├── cmake-3.16.0.tar.gz
+├── README.md
+├── scripts
+│   ├── apollo.bashrc
+│   ├── dev_start.sh
+│   ├── docker_base.sh
+│   ├── FastRTPS_1.5.0.patch
+│   └── install.sh
+└── third_party_civpilot.zip
+```
 ### Build Docker
 refer to docker/build/README.md
 ```shell
 cd docker/build
-bash build_docker.sh
+docker build  -f base.x86_64.dockerfile -t civ:civauto .
 ```
 
-After building the docker image, we can see our image by 
+After building the docker image, we can check our image by 
 ```shell
 sudo docker images
 ```
@@ -52,8 +66,11 @@ sudo docker images
 
 
 ### Start Docker Container
+First, please remove install and third_party in civpilot8 folder if they exist.
 ```shell
 cd civpilot8
+rm -rf install
+rm -rf third_party
 docker run --rm -i -d -v `pwd`:/home/baojiali/Downloads/civpilot8 --name civauto civ:civauto
 ```
 
@@ -67,13 +84,17 @@ sudo docker container ls
 ### Enter Docker Container
 ```shell
 cd civpilot8
-bash ./docker_into.sh
+docker exec -it civauto /bin/bash
+(bash ./docker_into.sh)
 ```
 After that, all the compiling or running of program, and even the unzip of third_party.zip should be done in the container
 
 ### Build cyber and the whole project in docker
-In the docker mode, the third_party is outside of the civpilot8, so the building process is a little bit different than in normal mode
+In the docker mode, the third_party is outside of the civpilot8, so the building process is a little bit different than in normal mode.
+
+
 ```shell
+cd civpilot8
 source ../install/setup.bash
 mkdir build && cd build
 cmake ..
@@ -139,10 +160,9 @@ sudo make install
 5. OpenCV (Optional)
 
 If we want to visualize something, we need to install OpenCV
+https://docs.opencv.org/4.x/d2/de6/tutorial_py_setup_in_ubuntu.html
 ```shell
 sudo apt-get install libpng-dev libjpeg-dev libopenexr-dev libtiff-dev libwebp-dev    
-
-https://docs.opencv.org/4.x/d2/de6/tutorial_py_setup_in_ubuntu.html
 git clone https://github.com/opencv/opencv.git
 cd opencv
 mkdir build
@@ -163,6 +183,7 @@ sudo apt-get install libxcb-xfixes0-dev gperf bison flex xserver-xorg libclang-d
 refer to https://doc.qt.io/archives/qt-5.12/linux-building.html
 https://download.qt.io/archive/qt/5.12/5.12.12/ \
 download qt-everywhere-src-5.12.12.tar.xz 
+
 ```shell
 wget https://download.qt.io/archive/qt/5.12/5.12.12/single/qt-everywhere-src-5.12.12.tar.xz
 tar -xf qt-everywhere-src-5.12.12.tar.xz
