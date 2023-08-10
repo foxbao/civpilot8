@@ -6,6 +6,16 @@ RUN apt-get update && apt-get install -y ruby ruby-dev
 RUN apt-get install -y libpoco-dev uuid-dev libncurses5-dev python3-dev python3-pip libeigen3-dev
 RUN apt-get install -y wget cmake curl libcurl4-openssl-dev git
 
+
+# cmake 
+WORKDIR /Downloads
+ADD cmake-3.16.0.tar.gz /Downloads
+RUN tar -zxvf cmake-3.16.0.tar.gz
+WORKDIR /Downloads/cmake-3.16.0
+RUN ./bootstrap
+RUN make -j16
+RUN make install
+
 # absl
 WORKDIR /Downloads
 RUN wget https://apollo-system.cdn.bcebos.com/archive/6.0/20200225.2.tar.gz
@@ -16,9 +26,9 @@ RUN cmake -DBUILD_SHARED_LIBS=ON -L CMakeLists.txt && make -j$(nproc)
 RUN make install
 
 # third party
-WORKDIR /home/baojiali/Downloads/civpilot8
-ADD third_party_civpilot.zip /home/baojiali/Downloads/civpilot8
-ADD scripts /home/baojiali/Downloads/civpilot8/scripts
+WORKDIR /home/baojiali/Downloads/third
+ADD third_party_civpilot.zip /home/baojiali/Downloads/third
+ADD scripts /home/baojiali/Downloads/third/scripts
 RUN unzip -d third_party third_party_civpilot.zip
 RUN bash ./scripts/install.sh
 

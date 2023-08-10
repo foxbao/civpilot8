@@ -3,14 +3,26 @@ CivPilot is an autonomous driving system, mainly focusing on the vehicle localiz
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
-2. [Get Code](#download-source-code)
-3. [Docker Version Installation](#docker-version-installation)
-4. [Normal Version Installation](#normal-version-installation)
-5. [Start Sensor](#start-senser)
-6. [Start CivLoc](#start-civloc)
-7. [Start CivView](#start-civview)
-8. [Tools](#tools)
+- [CivPilot](#civpilot)
+	- [Table of Contents](#table-of-contents)
+	- [Introduction](#introduction)
+	- [Download Source Code](#download-source-code)
+	- [Docker Version Installation](#docker-version-installation)
+		- [Build Docker](#build-docker)
+		- [Start Docker Container](#start-docker-container)
+		- [Enter Docker Container](#enter-docker-container)
+		- [Build cyber and the whole project in docker](#build-cyber-and-the-whole-project-in-docker)
+	- [Normal Version Installation](#normal-version-installation)
+		- [Download source code](#download-source-code-1)
+		- [dependency](#dependency)
+		- [Download Code and Build Third Party](#download-code-and-build-third-party)
+		- [Build cyber and the whole project](#build-cyber-and-the-whole-project)
+	- [Start Senser](#start-senser)
+	- [Data Recorder Player](#data-recorder-player)
+	- [Start Civloc](#start-civloc)
+	- [Start Civview](#start-civview)
+	- [Tools](#tools)
+	- [#6 Package](#6-package)
 ## Introduction
 
 ## Download Source Code
@@ -42,8 +54,10 @@ sudo docker images
 ### Start Docker Container
 ```shell
 cd civpilot8
-bash ./docker_start.sh
+docker run --rm -i -d -v `pwd`:/home/baojiali/Downloads/civpilot8 --name civauto civ:civauto
 ```
+
+
 Now the container is started, we can 
 ```shell
 sudo docker container ls
@@ -56,6 +70,16 @@ cd civpilot8
 bash ./docker_into.sh
 ```
 After that, all the compiling or running of program, and even the unzip of third_party.zip should be done in the container
+
+### Build cyber and the whole project in docker
+In the docker mode, the third_party is outside of the civpilot8, so the building process is a little bit different than in normal mode
+```shell
+source ../install/setup.bash
+mkdir build && cd build
+cmake ..
+make -j$(nproc)
+```
+
 
 ## Normal Version Installation
 
@@ -71,8 +95,17 @@ sudo apt install -y libpoco-dev uuid-dev libncurses5-dev python3-dev python3-pip
 sudo apt install -y wget cmake curl libcurl4-openssl-dev git
 python3 -m pip install protobuf==3.14.0
 ```
+2. cmake 3.16
+```shell
+wget https://github.com/Kitware/CMake/releases/download/v3.16.0/cmake-3.16.0.tar.gz
+tar -zxvf cmake-3.16.0.tar.gz
+cd cmake-3.16.0
+./bootstrap
+make -j16
+make install
+```
 
-2. absl
+3. absl
 ```shell
 wget https://apollo-system.cdn.bcebos.com/archive/6.0/20200225.2.tar.gz
 tar -xzvf 20200225.2.tar.gz
@@ -87,7 +120,7 @@ cmake -DBUILD_SHARED_LIBS=ON -L CMakeLists.txt && make -j$(nproc)
 sudo make install
 ```
 
-3. proj
+4. proj
 ```shell
 sudo apt-get install libproj-dev sqlite3 libtiff-dev
 ```
@@ -103,7 +136,7 @@ cmake --build .
 sudo make install
 ```
 
-4. OpenCV (Optional)
+5. OpenCV (Optional)
 
 If we want to visualize something, we need to install OpenCV
 ```shell
@@ -120,7 +153,7 @@ sudo make install
 ```
 Attention, if we have already installed Anaconda, it may cause some problems in the installation of OpenCV. Please temporarily move Anaconda
 
-5. QT 5.12 (Optional)
+6. QT 5.12 (Optional)
 
 If we want to use UI, we need to install QT
 ```shell
@@ -154,7 +187,7 @@ If everything is OK, we will be able to launch the designer interface
 /usr/local/Qt-5.12.12/bin/designer
 ```
 
-6. VTK 8.2.0 (Optional)
+7. VTK 8.2.0 (Optional)
 
 If we want to use Viewer, we need to install VTK from https://vtk.org/download/
 
@@ -219,37 +252,6 @@ cmake ..
 make -j$(nproc)
 ```
 
-### Test of Cyber
-
-1. pub/sub
-
-> talker
-
-```shell
-source build/setup.bash
-./build/cyber/examples/cyber_example_talker
-```
-> listener
-
-```shell
-source build/setup.bash
-./build/cyber/examples/cyber_example_listener
-```
-
-2. component
-
-```shell
-source build/setup.bash
-cyber_launch start share/examples/common.launch
-./cyber/examples/common_component_example/channel_prediction_writer
-./cyber/examples/common_component_example/channel_test_writer
-```
-
-2. cyber_monitor
-```shell
-source build/setup.bash
-cyber_monitor
-```
 
 ## Start Senser
 1. Start IMU
@@ -300,18 +302,23 @@ source build/setup.bash
 ```
 <img src="docs/qt_interface.png" width="400">
 
-5. Data Recorder \
+
+## Data Recorder Player
+1. Data Recorder \
 To facilitate the offline debug, we can record the sensor data received into a file
 ```shell
 source build/setup.bash
 cyber_recorder record -a -o example_data
+# ex
 cyber_recorder record -a -o 202307251424
 ```
-6. Data Player \
+2. Data Player \
 The recorded data can be played again
 ```shell
 source build/setup.bash
 cyber_recorder play -f example_data
+# ex 
+cyber_recorder play -f 202307251424.000*
 ```
 We have prepared some sample data, so you can play this file to facilitate the debug, which is disponible vis baidu
 https://pan.baidu.com/s/1tL7HkXVNG8o9wTCJdhUepQ
@@ -321,7 +328,7 @@ unzip data data.zip
 cyber_recorder play -f data/202207211650/202207211650.000*
 ```
 
-## Start civloc 
+## Start Civloc 
 After the reading from sensor is started, we can launch the Online localization program civloc. It reads in the sensor information from topics of cyber, and then uses filter to calculate the localization
 1. Online mode
 (we may need to modify the path of the vw.conf)
