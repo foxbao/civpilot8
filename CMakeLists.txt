@@ -63,6 +63,7 @@ list(APPEND compile_dirs
   civloc
   # planning
   # routing
+  # msgsend
   # 
   # test
 )

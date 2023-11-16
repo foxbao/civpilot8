@@ -1,28 +1,28 @@
 # CivPilot
-CivPilot is an autonomous driving system, mainly focusing on the vehicle localization modules
+CivPilot 是一个自动驾驶平台，目前主要功能是实现高精度定位，中间件基于百度阿波罗的cyber
 
 - [CivPilot](#civpilot)
-	- [Introduction](#introduction)
-	- [Download Source Code](#download-source-code)
-	- [Docker Version Installation](#docker-version-installation)
-		- [Build Docker](#build-docker)
-		- [Start Docker Container](#start-docker-container)
-		- [Enter Docker Container](#enter-docker-container)
-		- [Build cyber and the whole project in docker](#build-cyber-and-the-whole-project-in-docker)
+	- [简介](#简介)
+	- [代码下载](#代码下载)
+	- [Docker方式安装](#docker方式安装)
+		- [编译Docker](#编译docker)
+		- [启动Docker容器](#启动docker容器)
+		- [进入docker容器](#进入docker容器)
+		- [编译cyber与整个civpilot项目](#编译cyber与整个civpilot项目)
 	- [Normal Version Installation](#normal-version-installation)
-		- [Download source code](#download-source-code-1)
+		- [Download source code](#download-source-code)
 		- [Dependency](#dependency)
 		- [Download Code and Build Third Party](#download-code-and-build-third-party)
 		- [Build cyber and the whole project](#build-cyber-and-the-whole-project)
-	- [Start Senser](#start-senser)
+	- [启动传感器](#启动传感器)
 	- [Data Recorder Player](#data-recorder-player)
 	- [Start Civloc](#start-civloc)
-	- [Start Civview](#start-civview)
+	- [启动Civview可视化程序](#启动civview可视化程序)
 	- [Tools](#tools)
 	- [#6 Package](#6-package)
-## Introduction
+## 简介
 
-## Download Source Code
+## 代码下载
 ```shell
 git clone git@github.com:foxbao/civpilot8.git
 ```
@@ -31,10 +31,8 @@ And checkout the dev branch
 cd civpilot8
 git checkout -b dev origin/dev
 ```
-## Docker Version Installation
-The easiest way is to build the docker and then build and run the program in container.
-Make sure that all these files are available in docker/build because they will be used in the building of docker
-Two files might be missing from github. You can download from Baidu Pan  
+## Docker方式安装
+使用docker是本项目最简单的安装和运行方式。docker相关文件位于docker/build下。请确保docker/build目录下含有下图中的所有文件。其中有两个文件需要从百度网盘下载，链接如下  
 cmake-3.16.0.tar.gz, link：https://pan.baidu.com/s/1mrFneIqKtS_6vmeZb7jJBA , passwd：1234  
 third_party_civpilot.zip, link: https://pan.baidu.com/s/1racV6nXaHjWpa3d7RAci-Q, code:1234  
 ```shell
@@ -50,14 +48,14 @@ third_party_civpilot.zip, link: https://pan.baidu.com/s/1racV6nXaHjWpa3d7RAci-Q,
 │   └── install.sh
 └── third_party_civpilot.zip
 ```
-### Build Docker
-refer to docker/build/README.md
+### 编译Docker
+本项目包含一个无可视化界面的base版docker与一个包含了opencv、qt等可视化工具的full版本，参阅docker/build/README.md。以下给出了无可视化版本的docker编译方法
 ```shell
 cd docker/build
 docker build  -f base.x86_64.dockerfile -t civ:civauto .
 ```
 
-After building the docker image, we can check our image by 
+编译完成之后，我们可以查看确认docker镜像已经产生
 ```shell
 sudo docker images
 ```
@@ -65,42 +63,42 @@ sudo docker images
 <img src="docs/docker_image.png" width="400">
 
 
-### Start Docker Container
+### 启动Docker容器
+镜像产生之后，我们可以基于镜像启动一个容器
 First, please remove install and third_party in civpilot8 folder if they exist.
 ```shell
 cd civpilot8
 rm -rf install
 rm -rf third_party
 docker run --rm -i -d -v `pwd`:/home/baojiali/Downloads/civpilot8 --name civauto civ:civauto
+(bash ./docker_start.sh)
 ```
 
 
-Now the container is started, we can 
+我们可以通过以下命令确定容器已经启动
 ```shell
 sudo docker container ls
 ```
 <img src="docs/docker_container.png" width="400">
 
-### Enter Docker Container
+### 进入docker容器
 ```shell
 cd civpilot8
 docker exec -it civauto /bin/bash
 (bash ./docker_into.sh)
 ```
-After that, all the compiling or running of program, and even the unzip of third_party.zip should be done in the container
+docker容器启动之后，编译、运行等工作都可以在容器内执行
 
-### Build cyber and the whole project in docker
-In the docker mode, the third_party is outside of the civpilot8, so the building process is a little bit different than in normal mode.
-
+### 编译cyber与整个civpilot项目
+在docker模式下，third_party目录与civpilot8目录平级，故编译过程与普通编译过程略有不同
 
 ```shell
 cd civpilot8
-source ../install/setup.bash
+source ../third/install/setup.bash
 mkdir build && cd build
 cmake ..
 make -j$(nproc)
 ```
-
 
 ## Normal Version Installation
 
@@ -274,8 +272,8 @@ make -j$(nproc)
 ```
 
 
-## Start Senser
-1. Start IMU
+## 启动传感器
+1. 启动IMU
 ```shell
 sudo chmod 777 /dev/ttyXXX (allowing program to read from the serial port of imu)
 source build/setup.bash
@@ -374,14 +372,14 @@ cyber_monitor
 to check if the localization result is output, or even use the civview to visually check as described in the following chapter
 
 
-## Start Civview
-A more sophiscated UI civview is also provided to visually show the map and localizaion result, which facilitates the debug process. To use it, we need to enable the civview in CMakeLists.txt in root folder
+## 启动Civview可视化程序
+为了便于直观地查看定位程序结果与地图，以及进行代码调试，我们也提供了Civview可视化工具。为了编译Civview模块，需要在civpilot8目录下地CMakeLists中添加civview一项。
+启动方式如下
 ```shell
 source build/setup.bash
 ./build/civview/core/civview_core
 ```
-
-We have prepared the map data, which is disponible via
+我们提供了某一区域的地图以便演示，可以从百度网盘下载
 https://pan.baidu.com/s/12udaR8wdoXRxJl70IzdYQQ 
 code:1234
 ```shell

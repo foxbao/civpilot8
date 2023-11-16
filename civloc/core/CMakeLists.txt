@@ -25,7 +25,6 @@ TARGET_LINK_LIBRARIES(${MODULE_NAME}
 PUBLIC
     ${INNER_PROTO_TARGET_NAME}
     proto_msg
-    ${OpenCV_LIBS} 
     ${Protobuf_LIBRARIES}
 PRIVATE
     common
